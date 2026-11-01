@@ -1,0 +1,32 @@
+<UserControl x:Class="MateLauncher.App.Controls.MateLogo"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 Width="48" Height="48">
+	<Viewbox Stretch="Uniform">
+		<Canvas Width="100" Height="100">
+			<Border Canvas.Left="8" Canvas.Top="8" Width="84" Height="84" CornerRadius="26">
+				<Border.Background>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+						<GradientStop Color="{DynamicResource AccentColor}" Offset="0" />
+						<GradientStop Color="{DynamicResource AccentColor}" Offset="1" />
+					</LinearGradientBrush>
+				</Border.Background>
+				<Border.Effect>
+					<DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="26" ShadowDepth="0" Opacity="0.7" />
+				</Border.Effect>
+			</Border>
+			<Border Canvas.Left="8" Canvas.Top="8" Width="84" Height="84" CornerRadius="26">
+				<Border.Background>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+						<GradientStop Color="#33FFFFFF" Offset="0" />
+						<GradientStop Color="#00FFFFFF" Offset="0.55" />
+						<GradientStop Color="#40000000" Offset="1" />
+					</LinearGradientBrush>
+				</Border.Background>
+			</Border>
+			<Path Fill="White" Data="M24,70 L24,30 Q24,26 28,26 L33,26 Q36,26 38,29 L50,47 L62,29 Q64,26 67,26 L72,26 Q76,26 76,30 L76,70 L64,70 L64,48 L54,62 Q50,67 46,62 L36,48 L36,70 Z" />
+			<Ellipse Canvas.Left="60" Canvas.Top="60" Width="30" Height="30" Fill="#111111" />
+			<Path Fill="White" Data="M70,67 L83,75 L70,83 Z" />
+		</Canvas>
+	</Viewbox>
+</UserControl>

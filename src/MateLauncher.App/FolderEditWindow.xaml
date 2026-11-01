@@ -1,0 +1,100 @@
+<Window x:Class="MateLauncher.App.FolderEditWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:loc="clr-namespace:MateLauncher.App.Localization"
+		Title="{loc:Tr Folder_EditTitle}" Width="620" SizeToContent="Height" MaxHeight="760" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+		Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}">
+	<Window.Resources>
+		<Style x:Key="FieldLabel" TargetType="TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}" />
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="Margin" Value="0,16,0,6" />
+		</Style>
+	</Window.Resources>
+	<StackPanel Margin="24">
+		<TextBlock Text="{loc:Tr Folder_EditTitle}" FontSize="20" FontWeight="SemiBold" />
+
+		<TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Tr Library_TabName}" />
+		<TextBox x:Name="TabNameBox" Background="{DynamicResource CardBrush}" Foreground="{DynamicResource TextBrush}" CaretBrush="{DynamicResource TextBrush}" BorderThickness="0" Padding="10,9" FontSize="15" />
+
+		<TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Tr Folder_Icon}" />
+		<StackPanel Orientation="Horizontal">
+			<Border Width="44" Height="44" CornerRadius="10" Background="{DynamicResource CardBrush}">
+				<Grid>
+					<TextBlock x:Name="IconGlyph" Text="&#xE8B7;" FontFamily="{StaticResource IconFont}" FontSize="20" Foreground="{DynamicResource MutedTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+					<Image x:Name="IconPreview" Width="28" Height="28" RenderOptions.BitmapScalingMode="HighQuality" />
+				</Grid>
+			</Border>
+			<Button Content="{loc:Tr Library_ChooseIcon}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="12,0,8,0" Click="OnChooseIconClicked" />
+			<Button x:Name="ResetIconButton" Content="{loc:Tr Library_ResetIcon}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Click="OnResetIconClicked" />
+		</StackPanel>
+
+		<TextBlock x:Name="SourcesLabel" Style="{StaticResource FieldLabel}" />
+		<ScrollViewer MaxHeight="320" VerticalScrollBarVisibility="Auto">
+			<ItemsControl x:Name="DraftList">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border CornerRadius="10" Background="{DynamicResource CardBrush}" Padding="14,12" Margin="0,0,0,8">
+							<Border.Style>
+								<Style TargetType="Border">
+									<Style.Triggers>
+										<DataTrigger Binding="{Binding IsRemoved}" Value="True">
+											<Setter Property="Opacity" Value="0.4" />
+										</DataTrigger>
+									</Style.Triggers>
+								</Style>
+							</Border.Style>
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+								<StackPanel VerticalAlignment="Center">
+									<TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Path}" />
+									<TextBlock Text="{loc:Tr Folder_Missing}" Foreground="#FF6B6B" FontSize="12" Margin="0,2,0,0">
+										<TextBlock.Style>
+											<Style TargetType="TextBlock">
+												<Setter Property="Visibility" Value="Collapsed" />
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding Exists}" Value="False">
+														<Setter Property="Visibility" Value="Visible" />
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</TextBlock.Style>
+									</TextBlock>
+								</StackPanel>
+								<Button Grid.Column="1" Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Margin="10,0,0,0" ToolTip="{loc:Tr Btn_OpenFolder}" Click="OnOpenDraftClicked">
+									<TextBlock Text="&#xE838;" FontFamily="{StaticResource IconFont}" FontSize="14" />
+								</Button>
+								<Button Grid.Column="2" Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Margin="8,0,0,0" ToolTip="{loc:Tr Library_RemoveFolder}" Click="OnRemoveDraftClicked">
+									<TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}" FontSize="14" />
+								</Button>
+								<Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0,12,0,0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="Auto" />
+									</Grid.ColumnDefinitions>
+									<CheckBox Style="{StaticResource SwitchStyle}" IsChecked="{Binding IsEnabled, Mode=TwoWay}" VerticalAlignment="Center" />
+									<TextBlock Grid.Column="1" Text="{loc:Tr Folder_Enabled}" Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center" Margin="10,0,0,0" />
+									<Button Grid.Column="2" Content="{Binding ScanModeText}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" Command="{Binding CycleScanModeCommand}" ToolTip="{loc:Tr Scan_Hint}" />
+								</Grid>
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+			<Button Content="{loc:Tr Btn_Cancel}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Margin="0,0,8,0" IsCancel="True" />
+			<Button Content="{loc:Tr Btn_Save}" Style="{StaticResource AccentButton}" IsDefault="True" Click="OnSaveClicked" />
+		</StackPanel>
+	</StackPanel>
+</Window>

@@ -1,0 +1,60 @@
+<Window x:Class="MateLauncher.Installer.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		Width="580" Height="440" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+		Background="{StaticResource BackgroundBrush}" Foreground="{StaticResource TextBrush}"
+		FontFamily="Segoe UI">
+	<Grid Margin="32,28,32,28">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<StackPanel Orientation="Horizontal">
+			<Image Source="Assets/MateLauncher.png" Width="48" Height="48" RenderOptions.BitmapScalingMode="HighQuality" />
+			<StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+				<TextBlock x:Name="HeaderText" FontSize="22" FontWeight="Bold" />
+				<TextBlock x:Name="SubHeaderText" Foreground="{StaticResource MutedTextBrush}" Margin="0,2,0,0" />
+			</StackPanel>
+		</StackPanel>
+
+		<Grid Grid.Row="1" Margin="0,24,0,0">
+			<StackPanel x:Name="OptionsPage">
+				<TextBlock x:Name="DirectoryLabel" Foreground="{StaticResource MutedTextBrush}" FontSize="12" />
+				<Grid Margin="0,6,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<TextBox x:Name="DirectoryBox" Background="{StaticResource CardBrush}" Foreground="{StaticResource TextBrush}" CaretBrush="{StaticResource TextBrush}" BorderThickness="0" Padding="10,9" FontSize="13" VerticalContentAlignment="Center" />
+					<Button x:Name="BrowseButton" Grid.Column="1" Style="{StaticResource SetupButton}" Background="#33FFFFFF" Margin="8,0,0,0" Click="OnBrowseClicked" />
+				</Grid>
+				<CheckBox x:Name="DesktopBox" IsChecked="True" Margin="0,18,0,0" />
+				<CheckBox x:Name="StartMenuBox" IsChecked="True" />
+				<TextBlock x:Name="RuntimeNote" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" Margin="0,14,0,0" Visibility="Collapsed" />
+				<TextBlock x:Name="WarningText" Foreground="#FF6B6B" TextWrapping="Wrap" Margin="0,14,0,0" Visibility="Collapsed" />
+			</StackPanel>
+
+			<StackPanel x:Name="UninstallPage" Visibility="Collapsed">
+				<TextBlock x:Name="UninstallText" TextWrapping="Wrap" FontSize="14" />
+				<CheckBox x:Name="DeleteDataBox" Margin="0,18,0,0" />
+			</StackPanel>
+
+			<StackPanel x:Name="ProgressPage" Visibility="Collapsed" VerticalAlignment="Center">
+				<TextBlock x:Name="ProgressText" FontSize="14" />
+				<ProgressBar x:Name="InstallBar" Minimum="0" Maximum="1" Height="8" Margin="0,12,0,0" Foreground="{StaticResource AccentBrush}" Background="{StaticResource CardBrush}" BorderThickness="0" />
+			</StackPanel>
+
+			<StackPanel x:Name="DonePage" Visibility="Collapsed">
+				<TextBlock x:Name="DoneText" TextWrapping="Wrap" FontSize="14" />
+				<CheckBox x:Name="LaunchBox" IsChecked="True" Margin="0,18,0,0" />
+				<CheckBox x:Name="SafeModeBox" Margin="0,8,0,0" Visibility="Collapsed" />
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+				<Button x:Name="CancelButton" Style="{StaticResource SetupButton}" Background="#33FFFFFF" Margin="0,0,10,0" Click="OnCancelClicked" />
+				<Button x:Name="PrimaryButton" Style="{StaticResource SetupButton}" Click="OnPrimaryClicked" />
+			</StackPanel>
+		</Grid>
+	</Grid>
+</Window>

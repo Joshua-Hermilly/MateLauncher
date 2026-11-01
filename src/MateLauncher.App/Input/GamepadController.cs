@@ -1,0 +1,263 @@
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Threading;
+using MateLauncher.App.ViewModels;
+
+namespace MateLauncher.App.Input;
+
+public class GamepadController
+{
+	private const ushort DPadUp = 0x0001;
+	private const ushort DPadDown = 0x0002;
+	private const ushort DPadLeft = 0x0004;
+	private const ushort DPadRight = 0x0008;
+	private const ushort StartButton = 0x0010;
+	private const ushort LeftShoulder = 0x0100;
+	private const ushort RightShoulder = 0x0200;
+	private const ushort ButtonA = 0x1000;
+	private const ushort ButtonB = 0x2000;
+	private const ushort ButtonX = 0x4000;
+	private const ushort ButtonY = 0x8000;
+	private const short StickThreshold = 16000;
+	private const double SliderStep = 10;
+
+	private static readonly TimeSpan _FirstRepeatDelay = TimeSpan.FromMilliseconds( 350 );
+	private static readonly TimeSpan _RepeatInterval = TimeSpan.FromMilliseconds( 110 );
+
+	private readonly MainWindow _Window;
+	private readonly MainViewModel _ViewModel;
+	private readonly DispatcherTimer _Timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds( 16 ) };
+	private ushort _PreviousButtons;
+	private FocusNavigationDirection? _HeldDirection;
+	private DateTime _NextRepeatAt;
+
+	[StructLayout( LayoutKind.Sequential )]
+	private struct XInputGamepad
+	{
+		public ushort Buttons;
+		public byte LeftTrigger;
+		public byte RightTrigger;
+		public short ThumbLeftX;
+		public short ThumbLeftY;
+		public short ThumbRightX;
+		public short ThumbRightY;
+	}
+
+	[StructLayout( LayoutKind.Sequential )]
+	private struct XInputState
+	{
+		public uint PacketNumber;
+		public XInputGamepad Gamepad;
+	}
+
+	[DllImport( "xinput1_4.dll", EntryPoint = "XInputGetState" )]
+	private static extern uint XInputGetState( uint userIndex, out XInputState state );
+
+	public GamepadController( MainWindow window, MainViewModel viewModel )
+	{
+		_Window = window;
+		_ViewModel = viewModel;
+		_Timer.Tick += ( _, _ ) => Poll();
+	}
+
+	public void Start()
+	{
+		_Timer.Start();
+	}
+
+	private void Poll()
+	{
+		if ( !_Window.IsActive || !TryReadState( out XInputGamepad pad ) )
+		{
+			_PreviousButtons = 0;
+			_HeldDirection = null;
+			return;
+		}
+
+		ushort pressed = ( ushort ) ( pad.Buttons & ~_PreviousButtons );
+		_PreviousButtons = pad.Buttons;
+
+		HandleDirection( ReadDirection( pad ) );
+		HandleButtons( pressed );
+	}
+
+	private static bool TryReadState( out XInputGamepad pad )
+	{
+		pad = default;
+
+		try
+		{
+			for ( uint index = 0; index < 4; index++ )
+			{
+				if ( XInputGetState( index, out XInputState state ) == 0 )
+				{
+					pad = state.Gamepad;
+					return true;
+				}
+			}
+		}
+		catch ( Exception exception ) when ( exception is DllNotFoundException or EntryPointNotFoundException )
+		{
+		}
+
+		return false;
+	}
+
+	private static FocusNavigationDirection? ReadDirection( XInputGamepad pad )
+	{
+		if ( ( pad.Buttons & DPadUp ) != 0 || pad.ThumbLeftY > StickThreshold )
+		{
+			return FocusNavigationDirection.Up;
+		}
+
+		if ( ( pad.Buttons & DPadDown ) != 0 || pad.ThumbLeftY < -StickThreshold )
+		{
+			return FocusNavigationDirection.Down;
+		}
+
+		if ( ( pad.Buttons & DPadLeft ) != 0 || pad.ThumbLeftX < -StickThreshold )
+		{
+			return FocusNavigationDirection.Left;
+		}
+
+		if ( ( pad.Buttons & DPadRight ) != 0 || pad.ThumbLeftX > StickThreshold )
+		{
+			return FocusNavigationDirection.Right;
+		}
+
+		return null;
+	}
+
+	private void HandleDirection( FocusNavigationDirection? direction )
+	{
+		if ( direction is null )
+		{
+			_HeldDirection = null;
+			return;
+		}
+
+		DateTime now = DateTime.UtcNow;
+
+		if ( direction != _HeldDirection )
+		{
+			_HeldDirection = direction;
+			_NextRepeatAt = now + _FirstRepeatDelay;
+		}
+		else if ( now >= _NextRepeatAt )
+		{
+			_NextRepeatAt = now + _RepeatInterval;
+		}
+		else
+		{
+			return;
+		}
+
+		Move( direction.Value );
+	}
+
+	private void Move( FocusNavigationDirection direction )
+	{
+		if ( !EnsureFocus() )
+		{
+			return;
+		}
+
+		if ( Keyboard.FocusedElement is Slider slider && direction is FocusNavigationDirection.Left or FocusNavigationDirection.Right )
+		{
+			slider.Value = Math.Clamp( slider.Value + ( direction == FocusNavigationDirection.Right ? SliderStep : -SliderStep ), slider.Minimum, slider.Maximum );
+			return;
+		}
+
+		( Keyboard.FocusedElement as UIElement )?.MoveFocus( new TraversalRequest( direction ) );
+	}
+
+	private void HandleButtons( ushort pressed )
+	{
+		if ( pressed == 0 )
+		{
+			return;
+		}
+
+		if ( ( pressed & ButtonA ) != 0 && EnsureFocus() )
+		{
+			Activate( Keyboard.FocusedElement as DependencyObject );
+		}
+
+		if ( ( pressed & ButtonB ) != 0 )
+		{
+			_ViewModel.CloseDetailCommand.Execute( null );
+		}
+
+		if ( ( pressed & ButtonX ) != 0 && GetFocusedCard() is GameCardViewModel launchCard )
+		{
+			_ViewModel.LaunchGameCommand.Execute( launchCard );
+		}
+
+		if ( ( pressed & ButtonY ) != 0 && GetFocusedCard() is GameCardViewModel favoriteCard )
+		{
+			_ViewModel.ToggleFavoriteCommand.Execute( favoriteCard );
+		}
+
+		if ( ( pressed & LeftShoulder ) != 0 )
+		{
+			_ViewModel.CycleNavigation( -1 );
+		}
+
+		if ( ( pressed & RightShoulder ) != 0 )
+		{
+			_ViewModel.CycleNavigation( 1 );
+		}
+
+		if ( ( pressed & StartButton ) != 0 )
+		{
+			_ViewModel.OpenSettingsCommand.Execute( null );
+		}
+	}
+
+	private GameCardViewModel? GetFocusedCard()
+	{
+		if ( !EnsureFocus() )
+		{
+			return null;
+		}
+
+		return ( Keyboard.FocusedElement as FrameworkElement )?.DataContext as GameCardViewModel ?? _ViewModel.SelectedGame;
+	}
+
+	private static void Activate( DependencyObject? element )
+	{
+		switch ( element )
+		{
+			case RadioButton radio:
+				radio.IsChecked = true;
+				break;
+			case ToggleButton toggle:
+				toggle.IsChecked = toggle.IsChecked != true;
+				break;
+			case Button button:
+				( new ButtonAutomationPeer( button ).GetPattern( PatternInterface.Invoke ) as IInvokeProvider )?.Invoke();
+				break;
+			case ListBoxItem item:
+				item.IsSelected = true;
+				break;
+		}
+	}
+
+	private bool EnsureFocus()
+	{
+		if ( Keyboard.FocusedElement is UIElement { IsVisible: true, IsEnabled: true } and not Window )
+		{
+			return true;
+		}
+
+		FrameworkElement[] pages = { _Window.DetailPage, _Window.StatsPage, _Window.DownloadsPage, _Window.SettingsPage, _Window.LibraryPage };
+		FrameworkElement? page = pages.FirstOrDefault( candidate => candidate.IsVisible );
+
+		return page is not null && page.MoveFocus( new TraversalRequest( FocusNavigationDirection.First ) );
+	}
+}

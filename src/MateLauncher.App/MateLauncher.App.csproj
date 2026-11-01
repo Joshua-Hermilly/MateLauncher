@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\MateLauncher.Core\MateLauncher.Core.csproj" />
+    <ProjectReference Include="..\MateLauncher.Providers\MateLauncher.Providers.csproj" />
+    <ProjectReference Include="..\MateLauncher.Infrastructure\MateLauncher.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.*" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Version>0.5.1</Version>
+    <Product>MateLauncher</Product>
+    <Copyright>© 2026 Joshua Hermilly</Copyright>
+    <ApplicationIcon>Assets\MateLauncher.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <Resource Include="Assets\MateLauncher.png" />
+  </ItemGroup>
+
+</Project>

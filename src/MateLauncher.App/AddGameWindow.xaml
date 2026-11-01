@@ -1,0 +1,60 @@
+<Window x:Class="MateLauncher.App.AddGameWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:loc="clr-namespace:MateLauncher.App.Localization"
+		Title="{loc:Tr Add_Title}" Width="560" SizeToContent="Height" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+		Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}">
+	<Window.Resources>
+		<Style x:Key="FieldBox" TargetType="TextBox">
+			<Setter Property="Background" Value="{DynamicResource CardBrush}" />
+			<Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+			<Setter Property="CaretBrush" Value="{DynamicResource TextBrush}" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Padding" Value="10,9" />
+			<Setter Property="FontSize" Value="14" />
+		</Style>
+		<Style x:Key="FieldLabel" TargetType="TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}" />
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="Margin" Value="0,14,0,5" />
+		</Style>
+	</Window.Resources>
+	<StackPanel Margin="24">
+		<TextBlock Text="{loc:Tr Add_Header}" FontSize="20" FontWeight="SemiBold" />
+
+		<TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Tr Config_Executable}" />
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<TextBox x:Name="ExecutableBox" Style="{StaticResource FieldBox}" />
+			<Button Grid.Column="1" Content="{loc:Tr Btn_Browse}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Margin="8,0,0,0" Click="OnBrowseExecutableClicked" />
+		</Grid>
+
+		<TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Tr Config_Name}" />
+		<TextBox x:Name="NameBox" Style="{StaticResource FieldBox}" />
+
+		<TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Tr Config_Arguments}" />
+		<TextBox x:Name="ArgumentsBox" Style="{StaticResource FieldBox}" />
+
+		<TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Tr Config_Cover}" />
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<TextBox x:Name="CoverBox" Style="{StaticResource FieldBox}" />
+			<Button Grid.Column="1" Content="{loc:Tr Btn_Browse}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Margin="8,0,0,0" Click="OnBrowseCoverClicked" />
+		</Grid>
+
+		<CheckBox x:Name="AdministratorBox" Content="{loc:Tr Config_Admin}" Foreground="{DynamicResource TextBrush}" Margin="0,18,0,0" />
+
+		<TextBlock x:Name="ErrorText" Foreground="#FF6B6B" Margin="0,12,0,0" Visibility="Collapsed" TextWrapping="Wrap" />
+
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+			<Button Content="{loc:Tr Btn_Cancel}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Margin="0,0,8,0" IsCancel="True" />
+			<Button Content="{loc:Tr Btn_Add}" Style="{StaticResource AccentButton}" IsDefault="True" Click="OnAddClicked" />
+		</StackPanel>
+	</StackPanel>
+</Window>

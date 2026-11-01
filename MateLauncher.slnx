@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MateLauncher.App/MateLauncher.App.csproj" />
+    <Project Path="src/MateLauncher.Core/MateLauncher.Core.csproj" />
+    <Project Path="src/MateLauncher.Installer/MateLauncher.Installer.csproj" />
+    <Project Path="src/MateLauncher.Infrastructure/MateLauncher.Infrastructure.csproj" />
+    <Project Path="src/MateLauncher.Providers/MateLauncher.Providers.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MateLauncher.Tests/MateLauncher.Tests.csproj" />
+  </Folder>
+</Solution>

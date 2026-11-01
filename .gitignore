@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+*.user
+
+release/
+artifacts/
+src/MateLauncher.Installer/payload/

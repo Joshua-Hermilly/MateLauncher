@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>MateLauncher.Setup</AssemblyName>
+    <RootNamespace>MateLauncher.Installer</RootNamespace>
+    <Version>0.5.1</Version>
+    <Product>MateLauncher Setup</Product>
+    <Copyright>© 2026 Joshua Hermilly</Copyright>
+    <ApplicationIcon>..\MateLauncher.App\Assets\MateLauncher.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="..\MateLauncher.App\Assets\MateLauncher.png" Link="Assets\MateLauncher.png" />
+    <EmbeddedResource Include="payload\MateLauncher.zip" LogicalName="payload.zip" Condition="Exists('payload\MateLauncher.zip')" />
+  </ItemGroup>
+
+</Project>
