@@ -21,6 +21,8 @@ public record UpdateCheckResult( UpdateCheckStatus Status, AppUpdateInfo? Update
 
 public static partial class AppUpdateService
 {
+	public const string Repository = "Joshua-Hermilly/MateLauncher";
+
 	private static readonly HttpClient _HttpClient = CreateClient();
 
 	[GeneratedRegex( @"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" )]

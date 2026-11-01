@@ -25,7 +25,6 @@ public class AppSettings
 	public string SteamId { get; set; } = string.Empty;
 	public string GoogleSearchEngineId { get; set; } = string.Empty;
 	public bool StoreCoversRefreshed { get; set; }
-	public string UpdateRepository { get; set; } = string.Empty;
 	public bool CheckUpdatesOnStartup { get; set; } = true;
 	public List<CustomTheme> CustomThemes { get; set; } = new List<CustomTheme>();
 	public List<NewsFeed> NewsFeeds { get; set; } = new List<NewsFeed>();

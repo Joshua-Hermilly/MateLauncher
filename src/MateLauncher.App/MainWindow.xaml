@@ -47,7 +47,7 @@
 					<Image Source="Assets/MateLauncher.png" Width="18" Height="18" />
 					<TextBlock Text="MateLauncher" FontFamily="{StaticResource DisplayFont}" FontWeight="SemiBold" FontSize="13" Margin="10,0,0,0" VerticalAlignment="Center" />
 					<Border CornerRadius="9" Padding="8,1" Margin="10,0,0,0" Background="#22FFFFFF" VerticalAlignment="Center">
-						<TextBlock Text="v0.5" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" />
+						<TextBlock Text="{Binding VersionBadge}" FontFamily="{StaticResource MonoFont}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" />
 					</Border>
 				</StackPanel>
 
@@ -1798,8 +1798,6 @@
 							<StackPanel>
 								<TextBlock Text="{Binding CurrentVersionText}" FontWeight="SemiBold" />
 								<TextBlock Text="{loc:Tr Update_Desc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,6,0,0" FontSize="12" />
-								<TextBlock Text="{loc:Tr Update_Repository}" Style="{StaticResource SectionTitle}" Margin="0,16,0,6" />
-								<TextBox Text="{Binding UpdateRepository, UpdateSourceTrigger=PropertyChanged}" Padding="10,9" FontSize="13" BorderThickness="0" Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}" CaretBrush="{DynamicResource TextBrush}" />
 								<CheckBox Content="{loc:Tr Update_Auto}" IsChecked="{Binding CheckUpdatesOnStartup}" Margin="0,12,0,0" />
 								<StackPanel Orientation="Horizontal" Margin="0,14,0,0">
 									<Button Content="{loc:Tr Update_Check}" Style="{StaticResource AccentButton}" Command="{Binding CheckForUpdatesCommand}" />

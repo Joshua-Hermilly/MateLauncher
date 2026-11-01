@@ -108,7 +108,7 @@ public static class Strings
 		Add( "Library_TabName", "NOM DE L'ONGLET", "TAB NAME" );
 		Add( "Library_RemoveFolder", "Retirer ce dossier", "Remove this folder" );
 
-		Add( "About_Version", "VERSION 0.5 · EN DÉVELOPPEMENT", "VERSION 0.5 · IN DEVELOPMENT" );
+		Add( "About_Version", "OPEN SOURCE · EN DÉVELOPPEMENT", "OPEN SOURCE · IN DEVELOPMENT" );
 		Add( "About_Text", "Un lanceur unique pour Steam, Epic Games, GOG, EA App, Ubisoft Connect, Battle.net, Xbox et vos propres dossiers de jeux.", "One launcher for Steam, Epic Games, GOG, EA App, Ubisoft Connect, Battle.net, Xbox and your own game folders." );
 		Add( "About_License", "Open source · licence MIT · aucune clé d'API requise.", "Open source · MIT license · no API key required." );
 

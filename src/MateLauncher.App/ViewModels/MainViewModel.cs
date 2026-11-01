@@ -457,9 +457,6 @@ public partial class MainViewModel : ObservableObject
 	public ObservableCollection<NavItemViewModel> CategoryItems { get; } = new ObservableCollection<NavItemViewModel>();
 	public ObservableCollection<NavItemViewModel> GroupItems { get; } = new ObservableCollection<NavItemViewModel>();
 	[ObservableProperty]
-	private string _UpdateRepository = string.Empty;
-
-	[ObservableProperty]
 	private bool _CheckUpdatesOnStartup = true;
 
 	[ObservableProperty]
@@ -487,6 +484,8 @@ public partial class MainViewModel : ObservableObject
 	public bool CanInstallUpdate => IsUpdateAvailable && !IsUpdating;
 
 	public string CurrentVersion { get; } = ReadCurrentVersion();
+
+	public string VersionBadge => "v" + CurrentVersion;
 
 	public string CurrentVersionText => string.Format( T( "Update_Current" ), CurrentVersion );
 
@@ -532,7 +531,6 @@ public partial class MainViewModel : ObservableObject
 		StartWithWindows = settings.StartWithWindows;
 		OverlayHotkey = settings.OverlayHotkey;
 		IncludeGameNews = settings.IncludeGameNews;
-		UpdateRepository = settings.UpdateRepository;
 		CheckUpdatesOnStartup = settings.CheckUpdatesOnStartup;
 		_ThemeService.SetCustomThemes( settings.CustomThemes );
 		GoogleApiKey = settings.GoogleApiKey;
@@ -762,7 +760,6 @@ public partial class MainViewModel : ObservableObject
 		settings.IsListView = IsListView;
 		settings.ThemeId = _ThemeId;
 		settings.CustomThemes = _ThemeService.GetCustomThemes().ToList();
-		settings.UpdateRepository = UpdateRepository;
 		settings.CheckUpdatesOnStartup = CheckUpdatesOnStartup;
 		settings.AccentColor = _AccentColor;
 		settings.AnimationsEnabled = AnimationsEnabled;
@@ -904,7 +901,7 @@ public partial class MainViewModel : ObservableObject
 
 	public async Task CheckUpdatesOnStartupAsync()
 	{
-		if ( CheckUpdatesOnStartup && !_RuntimeOptions.SafeMode && UpdateRepository.Trim().Length > 0 )
+		if ( CheckUpdatesOnStartup && !_RuntimeOptions.SafeMode )
 		{
 			await RunUpdateCheckAsync();
 		}
@@ -917,18 +914,8 @@ public partial class MainViewModel : ObservableObject
 			return;
 		}
 
-		string? repository = AppUpdateService.NormalizeRepository( UpdateRepository );
-
-		if ( repository is null )
-		{
-			UpdateStatusText = T( "Update_Invalid" );
-			return;
-		}
-
-		UpdateRepository = repository;
-		SaveSettings();
-		UpdateStatusText = T( "Update_Checking" );
-		UpdateCheckResult result = await AppUpdateService.CheckAsync( repository, CurrentVersion );
+				UpdateStatusText = T( "Update_Checking" );
+		UpdateCheckResult result = await AppUpdateService.CheckAsync( AppUpdateService.Repository, CurrentVersion );
 		_PendingUpdate = result.Update;
 		IsUpdateAvailable = result.Status == UpdateCheckStatus.Available;
 		IsUpdateBannerVisible = IsUpdateAvailable;

@@ -18,7 +18,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>0.5.1</Version>
+    <Version>0.6.1</Version>
     <Product>MateLauncher</Product>
     <Copyright>© 2026 Joshua Hermilly</Copyright>
     <ApplicationIcon>Assets\MateLauncher.ico</ApplicationIcon>
