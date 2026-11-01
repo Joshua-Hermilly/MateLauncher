@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Automation.Peers;
@@ -5,6 +6,7 @@ using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using MateLauncher.App.ViewModels;
 
@@ -35,6 +37,8 @@ public class GamepadController
 	private ushort _PreviousButtons;
 	private FocusNavigationDirection? _HeldDirection;
 	private DateTime _NextRepeatAt;
+	private IInputElement? _LibraryFocus;
+	private bool _HasPadInput;
 
 	[StructLayout( LayoutKind.Sequential )]
 	private struct XInputGamepad
@@ -63,6 +67,7 @@ public class GamepadController
 		_Window = window;
 		_ViewModel = viewModel;
 		_Timer.Tick += ( _, _ ) => Poll();
+		_ViewModel.PropertyChanged += OnViewModelChanged;
 	}
 
 	public void Start()
@@ -141,6 +146,8 @@ public class GamepadController
 			return;
 		}
 
+		_HasPadInput = true;
+
 		DateTime now = DateTime.UtcNow;
 
 		if ( direction != _HeldDirection )
@@ -182,6 +189,8 @@ public class GamepadController
 		{
 			return;
 		}
+
+		_HasPadInput = true;
 
 		if ( ( pressed & ButtonA ) != 0 && EnsureFocus() )
 		{
@@ -248,8 +257,96 @@ public class GamepadController
 		}
 	}
 
+	private void OnViewModelChanged( object? sender, PropertyChangedEventArgs e )
+	{
+		if ( e.PropertyName != nameof( MainViewModel.SelectedGame ) || !_HasPadInput )
+		{
+			return;
+		}
+
+		if ( _ViewModel.SelectedGame is not null )
+		{
+			if ( Keyboard.FocusedElement is DependencyObject focused && IsInside( focused, _Window.LibraryPage ) )
+			{
+				_LibraryFocus = Keyboard.FocusedElement;
+			}
+
+			_Window.Dispatcher.BeginInvoke( DispatcherPriority.Loaded, FocusDetail );
+		}
+		else
+		{
+			_Window.Dispatcher.BeginInvoke( DispatcherPriority.Loaded, RestoreLibraryFocus );
+		}
+	}
+
+	private void FocusDetail()
+	{
+		Button? play = FindButton( _Window.DetailPage, button => ReferenceEquals( button.Command, _ViewModel.LaunchGameCommand ) );
+
+		if ( play is { IsVisible: true, IsEnabled: true } )
+		{
+			Keyboard.Focus( play );
+			return;
+		}
+
+		_Window.DetailPage.MoveFocus( new TraversalRequest( FocusNavigationDirection.First ) );
+	}
+
+	private void RestoreLibraryFocus()
+	{
+		if ( _LibraryFocus is UIElement { IsVisible: true, IsEnabled: true } element )
+		{
+			Keyboard.Focus( element );
+			return;
+		}
+
+		_Window.LibraryPage.MoveFocus( new TraversalRequest( FocusNavigationDirection.First ) );
+	}
+
+	private static Button? FindButton( DependencyObject parent, Func<Button, bool> predicate )
+	{
+		for ( int index = 0; index < VisualTreeHelper.GetChildrenCount( parent ); index++ )
+		{
+			DependencyObject child = VisualTreeHelper.GetChild( parent, index );
+
+			if ( child is Button button && predicate( button ) )
+			{
+				return button;
+			}
+
+			Button? found = FindButton( child, predicate );
+
+			if ( found is not null )
+			{
+				return found;
+			}
+		}
+
+		return null;
+	}
+
+	private static bool IsInside( DependencyObject? element, DependencyObject container )
+	{
+		while ( element is not null )
+		{
+			if ( ReferenceEquals( element, container ) )
+			{
+				return true;
+			}
+
+			element = element is Visual ? VisualTreeHelper.GetParent( element ) : LogicalTreeHelper.GetParent( element );
+		}
+
+		return false;
+	}
+
 	private bool EnsureFocus()
 	{
+		if ( _Window.DetailPage.IsVisible && Keyboard.FocusedElement is DependencyObject current && IsInside( current, _Window.LibraryPage ) )
+		{
+			FocusDetail();
+		}
+
 		if ( Keyboard.FocusedElement is UIElement { IsVisible: true, IsEnabled: true } and not Window )
 		{
 			return true;

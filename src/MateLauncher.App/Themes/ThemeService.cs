@@ -14,7 +14,10 @@ public class ThemeService
 		new AppTheme( "violet", "Violet", "#16161B", "#0F0F13", "#1F1F27", "#2A2A35", "#2C2C38", "#A855F7", "#F2F2F7", "#8E8EA0" ),
 		new AppTheme( "ocean", "Océan", "#0E1621", "#0A111A", "#162232", "#1E2F45", "#24364D", "#3B9EFF", "#E6EEF8", "#8FA3BA" ),
 		new AppTheme( "foret", "Forêt", "#111A16", "#0B120F", "#182620", "#21352B", "#26382F", "#2FD08A", "#E5F2EA", "#8FA89A" ),
-		new AppTheme( "graphite", "Graphite", "#151515", "#0D0D0D", "#212121", "#2C2C2C", "#333333", "#FFB020", "#EDEDED", "#9A9A9A" )
+		new AppTheme( "graphite", "Graphite", "#151515", "#0D0D0D", "#212121", "#2C2C2C", "#333333", "#FFB020", "#EDEDED", "#9A9A9A" ),
+		new AppTheme( "aurore", "Aurore", "#1A1423", "#120D19", "#241B30", "#2F2440", "#35294A", "#FF5CA8", "#F6EEFA", "#A294B3" ),
+		new AppTheme( "minuit", "Minuit", "#0B0F1A", "#070A12", "#121828", "#1A2238", "#222B45", "#19D3DA", "#E4EBF7", "#8794AD" ),
+		new AppTheme( "rubis", "Rubis", "#1C1214", "#130B0D", "#281A1D", "#352327", "#3D2A2E", "#FF3B5C", "#F5E9EB", "#B39A9F" )
 	};
 
 	public IReadOnlyList<AppTheme> Themes => _Themes;

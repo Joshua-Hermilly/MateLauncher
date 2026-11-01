@@ -38,7 +38,7 @@ public partial class AppTheme
 		IsCustom = isCustom;
 	}
 
-	[GeneratedRegex( "^#?([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$" )]
+	[GeneratedRegex( "^#?[0-9A-Fa-f]{6}$" )]
 	private static partial Regex HexPattern();
 
 	public static bool IsValidColor( string? hex )

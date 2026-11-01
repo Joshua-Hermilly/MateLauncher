@@ -1,5 +1,8 @@
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MateLauncher.App.Localization;
@@ -14,17 +17,15 @@ public partial class ThemeColorField : ObservableObject
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor( nameof( Brush ) )]
-	[NotifyPropertyChangedFor( nameof( IsValid ) )]
 	private string _Hex;
 
-	public bool IsValid => AppTheme.IsValidColor( Hex );
-	public Brush Brush => IsValid ? AppTheme.ToBrush( AppTheme.NormalizeColor( Hex ) ) : Brushes.Transparent;
+	public Brush Brush => AppTheme.ToBrush( Hex );
 
 	public ThemeColorField( string key, string label, string hex )
 	{
 		Key = key;
 		Label = label;
-		_Hex = hex;
+		_Hex = AppTheme.NormalizeColor( hex );
 	}
 }
 
@@ -32,6 +33,7 @@ public partial class ThemeEditorWindow : Window
 {
 	private readonly ObservableCollection<ThemeColorField> _Fields = new ObservableCollection<ThemeColorField>();
 	private readonly string _ThemeId;
+	private bool _IsLoadingField;
 
 	public AppTheme? Result { get; private set; }
 	public bool IsDeleted { get; private set; }
@@ -43,12 +45,12 @@ public partial class ThemeEditorWindow : Window
 		NameBox.Text = isNew ? Localizer.Instance.Get( "Theme_DefaultName" ) : source.Name;
 		DeleteButton.Visibility = isNew ? Visibility.Collapsed : Visibility.Visible;
 
+		_Fields.Add( new ThemeColorField( "Accent", Localizer.Instance.Get( "Theme_Accent" ), source.Accent ) );
 		_Fields.Add( new ThemeColorField( "Background", Localizer.Instance.Get( "Theme_Background" ), source.Background ) );
 		_Fields.Add( new ThemeColorField( "Sidebar", Localizer.Instance.Get( "Theme_Sidebar" ), source.Sidebar ) );
 		_Fields.Add( new ThemeColorField( "Card", Localizer.Instance.Get( "Theme_Card" ), source.Card ) );
 		_Fields.Add( new ThemeColorField( "CardHover", Localizer.Instance.Get( "Theme_CardHover" ), source.CardHover ) );
 		_Fields.Add( new ThemeColorField( "Border", Localizer.Instance.Get( "Theme_Border" ), source.Border ) );
-		_Fields.Add( new ThemeColorField( "Accent", Localizer.Instance.Get( "Theme_Accent" ), source.Accent ) );
 		_Fields.Add( new ThemeColorField( "Text", Localizer.Instance.Get( "Theme_Text" ), source.Text ) );
 		_Fields.Add( new ThemeColorField( "Muted", Localizer.Instance.Get( "Theme_Muted" ), source.Muted ) );
 
@@ -58,69 +60,99 @@ public partial class ThemeEditorWindow : Window
 		}
 
 		FieldList.ItemsSource = _Fields;
+		FieldList.SelectedIndex = 0;
 		UpdatePreview();
 	}
 
-	private Brush PreviewBrush( string key, Brush fallback )
+	private string ValueOf( string key )
 	{
-		ThemeColorField field = _Fields.First( candidate => candidate.Key == key );
-		return field.IsValid ? field.Brush : fallback;
+		return _Fields.First( field => field.Key == key ).Hex;
 	}
 
 	private void UpdatePreview()
 	{
-		PreviewFrame.Background = PreviewBrush( "Background", Brushes.Black );
-		PreviewFrame.BorderBrush = PreviewBrush( "Border", Brushes.Gray );
-		PreviewSidebar.Background = PreviewBrush( "Sidebar", Brushes.Black );
-		PreviewCard.Background = PreviewBrush( "Card", Brushes.DimGray );
-		PreviewCardHover.Background = PreviewBrush( "CardHover", Brushes.Gray );
-		PreviewAccent.Background = PreviewBrush( "Accent", Brushes.Red );
-		PreviewTitle.Foreground = PreviewBrush( "Text", Brushes.White );
-		PreviewMuted.Foreground = PreviewBrush( "Muted", Brushes.Gray );
+		PreviewFrame.Background = AppTheme.ToBrush( ValueOf( "Background" ) );
+		PreviewFrame.BorderBrush = AppTheme.ToBrush( ValueOf( "Border" ) );
+		PreviewSidebar.Background = AppTheme.ToBrush( ValueOf( "Sidebar" ) );
+		PreviewDot.Fill = AppTheme.ToBrush( ValueOf( "Accent" ) );
+		PreviewBar1.Background = AppTheme.ToBrush( ValueOf( "Muted" ) );
+		PreviewBar2.Background = AppTheme.ToBrush( ValueOf( "Muted" ) );
+		PreviewTitle.Foreground = AppTheme.ToBrush( ValueOf( "Text" ) );
+		PreviewMuted.Foreground = AppTheme.ToBrush( ValueOf( "Muted" ) );
+		PreviewCard.Background = AppTheme.ToBrush( ValueOf( "Card" ) );
+		PreviewCardHover.Background = AppTheme.ToBrush( ValueOf( "CardHover" ) );
+		PreviewButton.Background = AppTheme.ToBrush( ValueOf( "Accent" ) );
 	}
 
-	private void OnSwatchClicked( object sender, RoutedEventArgs e )
+	private void OnFieldSelected( object sender, SelectionChangedEventArgs e )
 	{
-		if ( ( sender as FrameworkElement )?.DataContext is not ThemeColorField field )
+		if ( FieldList.SelectedItem is not ThemeColorField field )
 		{
 			return;
 		}
 
-		ColorPickerWindow picker = new ColorPickerWindow( field.Label, field.IsValid ? AppTheme.NormalizeColor( field.Hex ) : null ) { Owner = this };
+		_IsLoadingField = true;
+		SelectedLabel.Text = field.Label.ToUpperInvariant();
+		Picker.Hex = field.Hex;
+		_IsLoadingField = false;
+	}
 
-		if ( picker.ShowDialog() == true && picker.SelectedColor is not null && AppTheme.IsValidColor( picker.SelectedColor ) )
+	private void OnPickerChanged( object sender, EventArgs e )
+	{
+		if ( !_IsLoadingField && FieldList.SelectedItem is ThemeColorField field )
 		{
-			field.Hex = AppTheme.NormalizeColor( picker.SelectedColor );
+			field.Hex = Picker.Hex;
 		}
 	}
 
-	private void OnOkClicked( object sender, RoutedEventArgs e )
+	private AppTheme? BuildTheme()
 	{
 		string name = NameBox.Text.Trim();
 
 		if ( name.Length == 0 )
 		{
 			NameBox.Focus();
-			return;
+			return null;
 		}
 
-		if ( _Fields.Any( field => !field.IsValid ) )
+		return new AppTheme( _ThemeId, name, ValueOf( "Background" ), ValueOf( "Sidebar" ), ValueOf( "Card" ), ValueOf( "CardHover" ), ValueOf( "Border" ), ValueOf( "Accent" ), ValueOf( "Text" ), ValueOf( "Muted" ), true );
+	}
+
+	private void OnOkClicked( object sender, RoutedEventArgs e )
+	{
+		Result = BuildTheme();
+
+		if ( Result is not null )
 		{
-			return;
+			DialogResult = true;
 		}
-
-		string Value( string key )
-		{
-			return AppTheme.NormalizeColor( _Fields.First( field => field.Key == key ).Hex );
-		}
-
-		Result = new AppTheme( _ThemeId, name, Value( "Background" ), Value( "Sidebar" ), Value( "Card" ), Value( "CardHover" ), Value( "Border" ), Value( "Accent" ), Value( "Text" ), Value( "Muted" ), true );
-		DialogResult = true;
 	}
 
 	private void OnDeleteClicked( object sender, RoutedEventArgs e )
 	{
 		IsDeleted = true;
 		DialogResult = true;
+	}
+
+	private void OnExportClicked( object sender, RoutedEventArgs e )
+	{
+		AppTheme? theme = BuildTheme();
+
+		if ( theme is null )
+		{
+			return;
+		}
+
+		Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog
+		{
+			Title = Localizer.Instance.Get( "Theme_Export" ),
+			Filter = Localizer.Instance.Get( "Theme_FileFilter" ),
+			FileName = theme.Name + ".json"
+		};
+
+		if ( dialog.ShowDialog( this ) == true )
+		{
+			File.WriteAllText( dialog.FileName, JsonSerializer.Serialize( theme.ToCustom(), new JsonSerializerOptions { WriteIndented = true } ) );
+		}
 	}
 }

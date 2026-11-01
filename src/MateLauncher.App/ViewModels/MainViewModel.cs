@@ -494,7 +494,12 @@ public partial class MainViewModel : ObservableObject
 		SaveSettings();
 	}
 
-	public ObservableCollection<ThemeOptionViewModel> ThemeOptions { get; } = new ObservableCollection<ThemeOptionViewModel>();
+	public ObservableCollection<ThemeOptionViewModel> BuiltInThemeOptions { get; } = new ObservableCollection<ThemeOptionViewModel>();
+
+	public ObservableCollection<ThemeOptionViewModel> CustomThemeOptions { get; } = new ObservableCollection<ThemeOptionViewModel>();
+
+	[ObservableProperty]
+	private bool _HasNoCustomThemes = true;
 	public ObservableCollection<AccentOptionViewModel> AccentOptions { get; } = new ObservableCollection<AccentOptionViewModel>();
 	public ObservableCollection<FolderEntryViewModel> Folders { get; } = new ObservableCollection<FolderEntryViewModel>();
 	public ObservableCollection<UpdateItemViewModel> PendingUpdates { get; } = new ObservableCollection<UpdateItemViewModel>();
@@ -788,7 +793,7 @@ public partial class MainViewModel : ObservableObject
 
 		_ThemeId = option.Theme.Id;
 
-		foreach ( ThemeOptionViewModel themeOption in ThemeOptions )
+		foreach ( ThemeOptionViewModel themeOption in BuiltInThemeOptions.Concat( CustomThemeOptions ) )
 		{
 			themeOption.IsSelected = themeOption == option;
 		}
@@ -842,7 +847,7 @@ public partial class MainViewModel : ObservableObject
 	[RelayCommand]
 	public void PickCustomAccent()
 	{
-		ColorPickerWindow window = new ColorPickerWindow( T( "Appearance_Accent" ), _AccentColor ?? _ThemeService.GetTheme( _ThemeId ).Accent ) { Owner = Application.Current.MainWindow };
+		ColorPickerWindow window = new ColorPickerWindow( T( "Accent_Name" ), _AccentColor ?? _ThemeService.GetTheme( _ThemeId ).Accent ) { Owner = Application.Current.MainWindow };
 
 		if ( window.ShowDialog() != true )
 		{
@@ -865,12 +870,58 @@ public partial class MainViewModel : ObservableObject
 
 	private void RebuildThemeOptions()
 	{
-		ThemeOptions.Clear();
+		BuiltInThemeOptions.Clear();
+		CustomThemeOptions.Clear();
 
 		foreach ( AppTheme theme in _ThemeService.Themes )
 		{
-			ThemeOptions.Add( new ThemeOptionViewModel( theme ) { IsSelected = theme.Id == _ThemeId } );
+			ThemeOptionViewModel option = new ThemeOptionViewModel( theme ) { IsSelected = theme.Id == _ThemeId };
+			( theme.IsCustom ? CustomThemeOptions : BuiltInThemeOptions ).Add( option );
 		}
+
+		HasNoCustomThemes = CustomThemeOptions.Count == 0;
+	}
+
+	[RelayCommand]
+	public void ImportTheme()
+	{
+		Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog { Title = T( "Theme_Import" ), Filter = T( "Theme_FileFilter" ) };
+
+		if ( dialog.ShowDialog( Application.Current.MainWindow ) != true )
+		{
+			return;
+		}
+
+		AppTheme? theme = null;
+
+		try
+		{
+			CustomTheme? custom = System.Text.Json.JsonSerializer.Deserialize<CustomTheme>( System.IO.File.ReadAllText( dialog.FileName ) );
+
+			if ( custom is not null )
+			{
+				custom.Id = "custom-" + Guid.NewGuid().ToString( "N" )[ ..8 ];
+				theme = AppTheme.FromCustom( custom );
+			}
+		}
+		catch ( Exception exception ) when ( exception is System.Text.Json.JsonException or System.IO.IOException or UnauthorizedAccessException )
+		{
+			theme = null;
+		}
+
+		if ( theme is null )
+		{
+			MessageBox.Show( Application.Current.MainWindow, T( "Theme_ImportInvalid" ), T( "Theme_Import" ), MessageBoxButton.OK, MessageBoxImage.Warning );
+			return;
+		}
+
+		_ThemeService.SaveCustomTheme( theme );
+		_ThemeId = theme.Id;
+		_AccentColor = null;
+		RebuildThemeOptions();
+		RebuildAccentOptions();
+		_ThemeService.Apply( _ThemeId, _AccentColor );
+		SaveSettings();
 	}
 
 	[RelayCommand]

@@ -39,6 +39,59 @@
 		<Style x:Key="PageOverlay" TargetType="Grid">
 			<Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
 		</Style>
+	<DataTemplate x:Key="ThemeCardTemplate">
+			<Grid Width="168" Margin="0,0,14,14" Cursor="Hand">
+				<StackPanel>
+					<Border x:Name="Frame" Height="104" CornerRadius="12" BorderThickness="2" BorderBrush="{DynamicResource BorderBrush}" Background="{Binding Theme.BackgroundPreview}" ClipToBounds="True">
+						<Grid>
+							<Border HorizontalAlignment="Left" Width="30" Background="{Binding Theme.SidebarPreview}" />
+							<Border Margin="8,12,0,0" Width="14" Height="14" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="7" Background="{Binding Theme.AccentPreview}" />
+							<Border Margin="42,12,12,0" Height="24" VerticalAlignment="Top" CornerRadius="6" Background="{Binding Theme.CardPreview}" />
+							<Border Margin="42,44,60,0" Height="24" VerticalAlignment="Top" CornerRadius="6" Background="{Binding Theme.CardPreview}" />
+							<Border Margin="42,0,0,12" Height="9" Width="46" HorizontalAlignment="Left" VerticalAlignment="Bottom" CornerRadius="4.5" Background="{Binding Theme.AccentPreview}" />
+						</Grid>
+					</Border>
+					<DockPanel Margin="2,8,0,0">
+						<TextBlock x:Name="Check" DockPanel.Dock="Right" Text="&#xE73E;" FontFamily="{StaticResource IconFont}" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Visibility="Collapsed" />
+						<TextBlock Text="{Binding Theme.Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+					</DockPanel>
+				</StackPanel>
+				<Button Style="{StaticResource CardOverlayButton}" Height="104" VerticalAlignment="Top"
+						Command="{Binding DataContext.SelectThemeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+						CommandParameter="{Binding}" />
+				<Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,6,6,0" Width="28" Height="28" Cursor="Hand" ToolTip="{loc:Tr Theme_Edit}"
+						Command="{Binding DataContext.EditThemeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
+					<Button.Template>
+						<ControlTemplate TargetType="Button">
+							<Border x:Name="Disc" CornerRadius="14" Background="#99000000">
+								<TextBlock Text="&#xE70F;" FontFamily="{StaticResource IconFont}" FontSize="12" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+							</Border>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter TargetName="Disc" Property="Background" Value="{DynamicResource AccentBrush}" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Button.Template>
+					<Button.Style>
+						<Style TargetType="Button">
+							<Setter Property="Visibility" Value="Collapsed" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IsCustom}" Value="True">
+									<Setter Property="Visibility" Value="Visible" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Button.Style>
+				</Button>
+			</Grid>
+			<DataTemplate.Triggers>
+				<DataTrigger Binding="{Binding IsSelected}" Value="True">
+					<Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+					<Setter TargetName="Check" Property="Visibility" Value="Visible" />
+				</DataTrigger>
+			</DataTemplate.Triggers>
+		</DataTemplate>
 	</Window.Resources>
 	<DockPanel x:Name="RootPanel">
 		<Border DockPanel.Dock="Top" Height="38" Background="{DynamicResource SidebarBrush}">
@@ -1205,67 +1258,30 @@
 						<TextBlock Text="{loc:Tr Settings_Appearance}" Style="{StaticResource PageTitle}" />
 						<TextBlock Text="{loc:Tr Appearance_Subtitle}" Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
 
-						<DockPanel Margin="0,32,0,12">
-	<Button DockPanel.Dock="Right" Content="{loc:Tr Theme_Create}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Padding="12,5" FontSize="12" Command="{Binding CreateThemeCommand}" />
-	<TextBlock Text="{loc:Tr Appearance_Theme}" Style="{StaticResource SectionTitle}" VerticalAlignment="Center" />
-</DockPanel>
-						<ItemsControl ItemsSource="{Binding ThemeOptions}">
+<TextBlock Text="{loc:Tr Theme_Defaults}" Style="{StaticResource SectionTitle}" Margin="0,32,0,12" />
+						<ItemsControl ItemsSource="{Binding BuiltInThemeOptions}" ItemTemplate="{StaticResource ThemeCardTemplate}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<WrapPanel />
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<Grid Width="150" Margin="0,0,14,14">
-										<StackPanel>
-											<Border x:Name="Frame" Height="92" CornerRadius="10" BorderThickness="2" BorderBrush="{DynamicResource BorderBrush}" Background="{Binding Theme.BackgroundPreview}">
-												<Grid>
-													<Border HorizontalAlignment="Left" Width="34" CornerRadius="8,0,0,8" Background="{Binding Theme.SidebarPreview}" />
-													<Border Margin="44,12,10,0" Height="22" VerticalAlignment="Top" CornerRadius="5" Background="{Binding Theme.CardPreview}" />
-													<Border Margin="44,42,50,0" Height="22" VerticalAlignment="Top" CornerRadius="5" Background="{Binding Theme.CardPreview}" />
-													<Border Margin="44,0,10,10" Height="8" Width="40" HorizontalAlignment="Left" VerticalAlignment="Bottom" CornerRadius="4" Background="{Binding Theme.AccentPreview}" />
-												</Grid>
-											</Border>
-											<TextBlock Text="{Binding Theme.Name}" FontWeight="SemiBold" Margin="2,8,0,0" />
-										</StackPanel>
-										<Button Style="{StaticResource CardOverlayButton}" Height="92" VerticalAlignment="Top"
-												Command="{Binding DataContext.SelectThemeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-												CommandParameter="{Binding}" />
-											<Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,6,6,0" Width="28" Height="28" Cursor="Hand" ToolTip="{loc:Tr Theme_Edit}" Foreground="White"
-													Command="{Binding DataContext.EditThemeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
-												<Button.Template>
-													<ControlTemplate TargetType="Button">
-														<Border x:Name="Disc" CornerRadius="14" Background="#99000000">
-															<TextBlock Text="&#xE70F;" FontFamily="{StaticResource IconFont}" FontSize="12" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
-														</Border>
-														<ControlTemplate.Triggers>
-															<Trigger Property="IsMouseOver" Value="True">
-																<Setter TargetName="Disc" Property="Background" Value="{DynamicResource AccentBrush}" />
-															</Trigger>
-														</ControlTemplate.Triggers>
-													</ControlTemplate>
-												</Button.Template>
-												<Button.Style>
-													<Style TargetType="Button">
-														<Setter Property="Visibility" Value="Collapsed" />
-														<Style.Triggers>
-															<DataTrigger Binding="{Binding IsCustom}" Value="True">
-																<Setter Property="Visibility" Value="Visible" />
-															</DataTrigger>
-														</Style.Triggers>
-													</Style>
-												</Button.Style>
-											</Button>
-									</Grid>
-									<DataTemplate.Triggers>
-										<DataTrigger Binding="{Binding IsSelected}" Value="True">
-											<Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-										</DataTrigger>
-									</DataTemplate.Triggers>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
 						</ItemsControl>
+
+						<DockPanel Margin="0,18,0,12">
+							<StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+								<Button Content="{loc:Tr Theme_Import}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Padding="12,5" FontSize="12" Command="{Binding ImportThemeCommand}" />
+								<Button Content="{loc:Tr Theme_Create}" Style="{StaticResource AccentButton}" Padding="12,5" FontSize="12" Margin="8,0,0,0" Command="{Binding CreateThemeCommand}" />
+							</StackPanel>
+							<TextBlock Text="{loc:Tr Theme_Mine}" Style="{StaticResource SectionTitle}" VerticalAlignment="Center" />
+						</DockPanel>
+						<ItemsControl ItemsSource="{Binding CustomThemeOptions}" ItemTemplate="{StaticResource ThemeCardTemplate}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<WrapPanel />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+						</ItemsControl>
+						<TextBlock Text="{loc:Tr Theme_MineEmpty}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,8" Visibility="{Binding HasNoCustomThemes, Converter={StaticResource BoolToVisibility}}" />
 
 						<TextBlock Text="{loc:Tr Appearance_Accent}" Style="{StaticResource SectionTitle}" Margin="0,18,0,12" />
 						<ItemsControl ItemsSource="{Binding AccentOptions}">

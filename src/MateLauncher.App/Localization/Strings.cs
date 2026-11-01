@@ -243,6 +243,15 @@ public static class Strings
 		Add( "Color_Title", "Choisir une couleur", "Pick a color" );
 		Add( "Color_Header", "Couleur de « {0} »", "Color of “{0}”" );
 		Add( "Theme_Create", "Créer mon thème", "Create my theme" );
+		Add( "Theme_Defaults", "THÈMES PAR DÉFAUT", "DEFAULT THEMES" );
+		Add( "Theme_Mine", "MES THÈMES", "MY THEMES" );
+		Add( "Theme_MineEmpty", "Aucun thème personnalisé pour l'instant : créez-en un ou importez un fichier.", "No custom theme yet: create one or import a file." );
+		Add( "Theme_Import", "Importer", "Import" );
+		Add( "Theme_Export", "Exporter", "Export" );
+		Add( "Theme_Colors", "COULEURS", "COLORS" );
+		Add( "Theme_ImportInvalid", "Ce fichier n'est pas un thème MateLauncher valide.", "This file is not a valid MateLauncher theme." );
+		Add( "Theme_FileFilter", "Thème MateLauncher (*.json)|*.json", "MateLauncher theme (*.json)|*.json" );
+		Add( "Accent_Name", "Accent", "Accent" );
 		Add( "Theme_Edit", "Modifier ce thème", "Edit this theme" );
 		Add( "Theme_EditorTitle", "Thème personnalisé", "Custom theme" );
 		Add( "Theme_Name", "NOM DU THÈME", "THEME NAME" );
