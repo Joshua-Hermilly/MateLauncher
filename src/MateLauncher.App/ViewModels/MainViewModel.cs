@@ -554,12 +554,7 @@ public partial class MainViewModel : ObservableObject
 
 		RebuildThemeOptions();
 
-		AccentOptions.Add( new AccentOptionViewModel( null ) { IsSelected = _AccentColor is null } );
-
-		foreach ( string accentColor in themeService.AccentColors )
-		{
-			AccentOptions.Add( new AccentOptionViewModel( accentColor ) { IsSelected = string.Equals( accentColor, _AccentColor, StringComparison.OrdinalIgnoreCase ) } );
-		}
+		RebuildAccentOptions();
 
 		foreach ( GameFolder gameFolder in settings.GameFolders )
 		{
@@ -826,6 +821,46 @@ public partial class MainViewModel : ObservableObject
 		string? path = Environment.ProcessPath;
 		string? version = path is null ? null : FileVersionInfo.GetVersionInfo( path ).ProductVersion;
 		return version?.Split( '+' )[ 0 ] ?? "0.0.0";
+	}
+
+	private void RebuildAccentOptions()
+	{
+		AccentOptions.Clear();
+		AccentOptions.Add( new AccentOptionViewModel( null ) { IsSelected = _AccentColor is null } );
+
+		foreach ( string accentColor in _ThemeService.AccentColors )
+		{
+			AccentOptions.Add( new AccentOptionViewModel( accentColor ) { IsSelected = string.Equals( accentColor, _AccentColor, StringComparison.OrdinalIgnoreCase ) } );
+		}
+
+		if ( _AccentColor is not null && _ThemeService.AccentColors.All( accentColor => !string.Equals( accentColor, _AccentColor, StringComparison.OrdinalIgnoreCase ) ) )
+		{
+			AccentOptions.Add( new AccentOptionViewModel( _AccentColor ) { IsSelected = true } );
+		}
+	}
+
+	[RelayCommand]
+	public void PickCustomAccent()
+	{
+		ColorPickerWindow window = new ColorPickerWindow( T( "Appearance_Accent" ), _AccentColor ?? _ThemeService.GetTheme( _ThemeId ).Accent ) { Owner = Application.Current.MainWindow };
+
+		if ( window.ShowDialog() != true )
+		{
+			return;
+		}
+
+		if ( window.IsReset )
+		{
+			_AccentColor = null;
+		}
+		else if ( window.SelectedColor is not null && AppTheme.IsValidColor( window.SelectedColor ) )
+		{
+			_AccentColor = AppTheme.NormalizeColor( window.SelectedColor );
+		}
+
+		RebuildAccentOptions();
+		_ThemeService.Apply( _ThemeId, _AccentColor );
+		SaveSettings();
 	}
 
 	private void RebuildThemeOptions()

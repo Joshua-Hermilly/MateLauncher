@@ -1304,6 +1304,8 @@
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
 
+						<Button Content="{loc:Tr Accent_Custom}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Padding="12,6" FontSize="12" HorizontalAlignment="Left" Margin="0,12,0,0" Command="{Binding PickCustomAccentCommand}" />
+
 						<TextBlock Text="{loc:Tr Appearance_Display}" Style="{StaticResource SectionTitle}" Margin="0,30,0,12" />
 						<Border Style="{StaticResource OutlineCard}">
 							<StackPanel>

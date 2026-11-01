@@ -6,6 +6,56 @@
 		Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}">
 	<StackPanel Margin="24">
 		<TextBlock x:Name="HeaderText" FontSize="18" FontWeight="SemiBold" />
+
+		<Border Margin="0,16,0,0" Height="160" CornerRadius="10" ClipToBounds="True" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+			<Grid x:Name="SvArea" Cursor="Cross" Background="Red" SizeChanged="OnAreaSizeChanged"
+				  MouseLeftButtonDown="OnSvMouseDown" MouseMove="OnSvMouseMove" MouseLeftButtonUp="OnAreaMouseUp">
+				<Rectangle>
+					<Rectangle.Fill>
+						<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+							<GradientStop Color="#FFFFFFFF" Offset="0" />
+							<GradientStop Color="#00FFFFFF" Offset="1" />
+						</LinearGradientBrush>
+					</Rectangle.Fill>
+				</Rectangle>
+				<Rectangle>
+					<Rectangle.Fill>
+						<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+							<GradientStop Color="#00000000" Offset="0" />
+							<GradientStop Color="#FF000000" Offset="1" />
+						</LinearGradientBrush>
+					</Rectangle.Fill>
+				</Rectangle>
+				<Canvas IsHitTestVisible="False">
+					<Ellipse x:Name="SvThumb" Width="18" Height="18" Stroke="White" StrokeThickness="2">
+						<Ellipse.Effect>
+							<DropShadowEffect BlurRadius="4" ShadowDepth="0" Opacity="0.8" Color="Black" />
+						</Ellipse.Effect>
+					</Ellipse>
+				</Canvas>
+			</Grid>
+		</Border>
+
+		<Grid x:Name="HueArea" Height="20" Margin="0,12,0,0" Cursor="Hand" Background="Transparent" SizeChanged="OnAreaSizeChanged"
+			  MouseLeftButtonDown="OnHueMouseDown" MouseMove="OnHueMouseMove" MouseLeftButtonUp="OnAreaMouseUp">
+			<Border CornerRadius="10" Height="14">
+				<Border.Background>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+						<GradientStop Color="#FF0000" Offset="0" />
+						<GradientStop Color="#FFFF00" Offset="0.1667" />
+						<GradientStop Color="#00FF00" Offset="0.3333" />
+						<GradientStop Color="#00FFFF" Offset="0.5" />
+						<GradientStop Color="#0000FF" Offset="0.6667" />
+						<GradientStop Color="#FF00FF" Offset="0.8333" />
+						<GradientStop Color="#FF0000" Offset="1" />
+					</LinearGradientBrush>
+				</Border.Background>
+			</Border>
+			<Canvas IsHitTestVisible="False">
+				<Border x:Name="HueThumb" Width="8" Height="22" Canvas.Top="-1" CornerRadius="4" Background="White" BorderBrush="#88000000" BorderThickness="1" />
+			</Canvas>
+		</Grid>
+
 		<ItemsControl x:Name="SwatchList" Margin="0,16,0,0">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>

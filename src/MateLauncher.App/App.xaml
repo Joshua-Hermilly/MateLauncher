@@ -135,6 +135,12 @@
 			</Setter>
 		</Style>
 
+		<Style x:Key="SectionTitle" TargetType="TextBlock">
+			<Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+			<Setter Property="FontSize" Value="11" />
+			<Setter Property="FontWeight" Value="Bold" />
+			<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+		</Style>
 		<Style x:Key="AccentButton" TargetType="Button"><Setter Property="FocusVisualStyle" Value="{x:Null}" />
 			<Setter Property="Foreground" Value="White" />
 			<Setter Property="Background" Value="{DynamicResource AccentBrush}" />

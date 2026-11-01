@@ -81,6 +81,7 @@ public static class Strings
 		Add( "Appearance_Subtitle", "Personnalisez l'interface du lanceur.", "Customize the launcher interface." );
 		Add( "Appearance_Theme", "THÈME", "THEME" );
 		Add( "Appearance_Accent", "COULEUR D'ACCENT", "ACCENT COLOR" );
+		Add( "Accent_Custom", "Couleur personnalisée…", "Custom color…" );
 		Add( "Appearance_Display", "AFFICHAGE", "DISPLAY" );
 		Add( "Appearance_CardSize", "Taille des cartes", "Card size" );
 		Add( "Appearance_CardSizeDesc", "Largeur des jaquettes dans la bibliothèque.", "Width of the covers in the library." );
