@@ -1,5 +1,5 @@
 param(
-	[string]$Version = '0.5.1',
+	[string]$Version = '0.7.0',
 	[string]$RuntimeIdentifier = 'win-x64',
 	[switch]$SelfContained
 )
@@ -29,6 +29,9 @@ Copy-Item ( Join-Path $setupOutput 'MateLauncher.Setup.exe' ) $setupTarget -Forc
 
 $portableTarget = Join-Path $releaseFolder "MateLauncher-$Version-$RuntimeIdentifier-$suffix.zip"
 Compress-Archive -Path ( Join-Path $appOutput '*' ) -DestinationPath $portableTarget -Force
+
+$setupHash = ( Get-FileHash $setupTarget -Algorithm SHA256 ).Hash.ToLower()
+Set-Content -Path ( $setupTarget + '.sha256' ) -Value "$setupHash  $( Split-Path $setupTarget -Leaf )" -Encoding ascii
 
 Write-Output "Installer : $setupTarget"
 Write-Output "Portable  : $portableTarget"

@@ -105,6 +105,7 @@ public partial class GameCardViewModel : ObservableObject
 			GamePlatform.Xbox => "Xbox",
 			GamePlatform.Riot => "Riot Games",
 			GamePlatform.Folder => Localizer.Instance.Get( "Platform_Folder" ),
+			GamePlatform.Plugin => "Plugin",
 			_ => Localizer.Instance.Get( "Platform_Manual" )
 		};
 	}
@@ -122,6 +123,7 @@ public partial class GameCardViewModel : ObservableObject
 			GamePlatform.Xbox => Color.FromRgb( 0x5D, 0xD3, 0x5D ),
 			GamePlatform.Riot => Color.FromRgb( 0xEB, 0x00, 0x29 ),
 			GamePlatform.Folder => Color.FromRgb( 0xFF, 0xB0, 0x20 ),
+			GamePlatform.Plugin => Color.FromRgb( 0xA7, 0x8B, 0xFA ),
 			_ => Color.FromRgb( 0xB0, 0xB0, 0xC0 )
 		};
 	}

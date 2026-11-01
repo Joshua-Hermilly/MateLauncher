@@ -56,7 +56,7 @@
 								</Grid.ColumnDefinitions>
 								<StackPanel VerticalAlignment="Center">
 									<TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Path}" />
-									<TextBlock Text="{loc:Tr Folder_Missing}" Foreground="#FF6B6B" FontSize="12" Margin="0,2,0,0">
+									<TextBlock Text="{loc:Tr Folder_Missing}" Foreground="{DynamicResource DangerBrush}" FontSize="12" Margin="0,2,0,0">
 										<TextBlock.Style>
 											<Style TargetType="TextBlock">
 												<Setter Property="Visibility" Value="Collapsed" />

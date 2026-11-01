@@ -9,16 +9,20 @@ public class PlaytimeTracker : IPlaytimeTracker
 	private static readonly TimeSpan _StartTimeout = TimeSpan.FromMinutes( 3 );
 	private static readonly TimeSpan _PollInterval = TimeSpan.FromSeconds( 5 );
 
+	private const long MinimumSessionSeconds = 60;
+
 	private readonly ILibraryRepository _Repository;
+	private readonly IPerformanceMode _PerformanceMode;
 	private readonly ConcurrentDictionary<Guid, bool> _TrackedGames = new ConcurrentDictionary<Guid, bool>();
 
 	public event Action<Guid, long>? PlaytimeChanged;
 	public event Action<Guid>? SessionStarted;
 	public event Action<Guid>? SessionEnded;
 
-	public PlaytimeTracker( ILibraryRepository repository )
+	public PlaytimeTracker( ILibraryRepository repository, IPerformanceMode performanceMode )
 	{
 		_Repository = repository;
+		_PerformanceMode = performanceMode;
 	}
 
 	public void Track( Game game )
@@ -49,6 +53,7 @@ public class PlaytimeTracker : IPlaytimeTracker
 
 			DateTime startedAt = DateTime.UtcNow;
 			DateTime lastSeenAt = startedAt;
+			_PerformanceMode.ApplyToRunningGame( game );
 			SessionStarted?.Invoke( game.Id );
 
 			while ( DateTime.UtcNow - lastSeenAt < _PollInterval * 3 )
@@ -67,11 +72,18 @@ public class PlaytimeTracker : IPlaytimeTracker
 			if ( seconds > 0 )
 			{
 				long totalSeconds = await _Repository.AddPlaytimeAsync( game.Id, seconds );
+
+				if ( seconds >= MinimumSessionSeconds )
+				{
+					await _Repository.AddSessionAsync( game.Id, startedAt.ToLocalTime(), seconds );
+				}
+
 				PlaytimeChanged?.Invoke( game.Id, totalSeconds );
 			}
 		}
 		finally
 		{
+			await _PerformanceMode.RestoreAsync( game );
 			_TrackedGames.TryRemove( game.Id, out _ );
 		}
 	}

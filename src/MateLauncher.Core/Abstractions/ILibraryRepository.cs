@@ -28,6 +28,12 @@ public interface ILibraryRepository
 
 	Task<IReadOnlyList<DailyPlaytime>> GetDailyPlaytimeAsync( int days );
 
+	Task AddSessionAsync( Guid gameId, DateTime startedAt, long seconds );
+
+	Task<int> ApplyImportedPlaytimeAsync( IReadOnlyDictionary<Guid, ImportedPlaytime> updates );
+
+	Task<IReadOnlyList<GameSession>> GetSessionsAsync( Guid gameId, int take );
+
 	Task AddAsync( Game game );
 
 	Task UpdateAsync( Game game );

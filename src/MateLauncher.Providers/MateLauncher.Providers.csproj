@@ -4,6 +4,10 @@
     <ProjectReference Include="..\MateLauncher.Core\MateLauncher.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="MateLauncher.Tests" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

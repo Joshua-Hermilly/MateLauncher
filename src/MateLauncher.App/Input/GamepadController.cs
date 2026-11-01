@@ -174,13 +174,149 @@ public class GamepadController
 			return;
 		}
 
+		if ( Keyboard.FocusedElement is DependencyObject sidebarFocus && IsInside( sidebarFocus, _Window.SidebarPanel ) )
+		{
+			MoveInSidebar( direction );
+			return;
+		}
+
 		if ( Keyboard.FocusedElement is Slider slider && direction is FocusNavigationDirection.Left or FocusNavigationDirection.Right )
 		{
 			slider.Value = Math.Clamp( slider.Value + ( direction == FocusNavigationDirection.Right ? SliderStep : -SliderStep ), slider.Minimum, slider.Maximum );
 			return;
 		}
 
+		if ( direction == FocusNavigationDirection.Left && Keyboard.FocusedElement is UIElement origin )
+		{
+			MoveLeftOrEnterSidebar( origin );
+			return;
+		}
+
 		( Keyboard.FocusedElement as UIElement )?.MoveFocus( new TraversalRequest( direction ) );
+	}
+
+	private void MoveLeftOrEnterSidebar( UIElement origin )
+	{
+		double startLeft = GetLeft( origin );
+		bool moved = origin.MoveFocus( new TraversalRequest( FocusNavigationDirection.Left ) );
+		IInputElement? current = Keyboard.FocusedElement;
+		bool hasProgressed = moved && !ReferenceEquals( current, origin ) && current is UIElement target && GetLeft( target ) < startLeft - 1;
+
+		if ( hasProgressed )
+		{
+			return;
+		}
+
+		Keyboard.Focus( origin );
+		EnterSidebar();
+	}
+
+	private void MoveInSidebar( FocusNavigationDirection direction )
+	{
+		if ( direction == FocusNavigationDirection.Right )
+		{
+			FocusContent();
+			return;
+		}
+
+		if ( direction == FocusNavigationDirection.Left )
+		{
+			return;
+		}
+
+		List<UIElement> targets = GetSidebarTargets();
+		int index = Keyboard.FocusedElement is UIElement focused ? targets.IndexOf( focused ) : -1;
+		int next = index < 0 ? 0 : Math.Clamp( index + ( direction == FocusNavigationDirection.Down ? 1 : -1 ), 0, targets.Count - 1 );
+		FocusSidebarTarget( targets, next );
+	}
+
+	private void EnterSidebar()
+	{
+		List<UIElement> targets = GetSidebarTargets();
+		int selected = targets.FindIndex( element => element is ListBoxItem { IsSelected: true } );
+		FocusSidebarTarget( targets, selected < 0 ? 0 : selected );
+	}
+
+	private static void FocusSidebarTarget( List<UIElement> targets, int index )
+	{
+		if ( index < 0 || index >= targets.Count )
+		{
+			return;
+		}
+
+		Keyboard.Focus( targets[ index ] );
+		( targets[ index ] as FrameworkElement )?.BringIntoView();
+	}
+
+	private List<UIElement> GetSidebarTargets()
+	{
+		List<( UIElement Element, double Top )> found = new List<( UIElement Element, double Top )>();
+		CollectSidebarTargets( _Window.SidebarPanel, found );
+		return found.OrderBy( item => item.Top ).Select( item => item.Element ).ToList();
+	}
+
+	private void CollectSidebarTargets( DependencyObject parent, List<( UIElement Element, double Top )> found )
+	{
+		for ( int index = 0; index < VisualTreeHelper.GetChildrenCount( parent ); index++ )
+		{
+			DependencyObject child = VisualTreeHelper.GetChild( parent, index );
+
+			if ( child is UIElement { IsVisible: true, IsEnabled: true, Focusable: true } element && ( element is ListBoxItem || element is Button ) )
+			{
+				try
+				{
+					found.Add( ( element, element.TransformToAncestor( _Window.SidebarPanel ).Transform( new Point( 0, 0 ) ).Y ) );
+				}
+				catch ( InvalidOperationException )
+				{
+				}
+
+				continue;
+			}
+
+			CollectSidebarTargets( child, found );
+		}
+	}
+
+	private double GetLeft( IInputElement? element )
+	{
+		if ( element is not UIElement uiElement )
+		{
+			return 0;
+		}
+
+		try
+		{
+			return uiElement.TransformToAncestor( _Window ).Transform( new Point( 0, 0 ) ).X;
+		}
+		catch ( InvalidOperationException )
+		{
+			return 0;
+		}
+	}
+
+	private void FocusContent()
+	{
+		FrameworkElement? page = GetVisiblePage();
+
+		if ( ReferenceEquals( page, _Window.DetailPage ) )
+		{
+			FocusDetail();
+		}
+		else if ( ReferenceEquals( page, _Window.LibraryPage ) )
+		{
+			RestoreLibraryFocus();
+		}
+		else
+		{
+			page?.MoveFocus( new TraversalRequest( FocusNavigationDirection.First ) );
+		}
+	}
+
+	private FrameworkElement? GetVisiblePage()
+	{
+		FrameworkElement[] pages = { _Window.DetailPage, _Window.HomePage, _Window.StatsPage, _Window.DownloadsPage, _Window.FriendsPage, _Window.NewsPage, _Window.SettingsPage, _Window.LibraryPage };
+		return pages.FirstOrDefault( candidate => candidate.IsVisible );
 	}
 
 	private void HandleButtons( ushort pressed )
@@ -199,7 +335,14 @@ public class GamepadController
 
 		if ( ( pressed & ButtonB ) != 0 )
 		{
-			_ViewModel.CloseDetailCommand.Execute( null );
+			if ( Keyboard.FocusedElement is DependencyObject focusedForBack && IsInside( focusedForBack, _Window.SidebarPanel ) )
+			{
+				FocusContent();
+			}
+			else
+			{
+				_ViewModel.CloseDetailCommand.Execute( null );
+			}
 		}
 
 		if ( ( pressed & ButtonX ) != 0 && GetFocusedCard() is GameCardViewModel launchCard )
@@ -352,8 +495,7 @@ public class GamepadController
 			return true;
 		}
 
-		FrameworkElement[] pages = { _Window.DetailPage, _Window.StatsPage, _Window.DownloadsPage, _Window.SettingsPage, _Window.LibraryPage };
-		FrameworkElement? page = pages.FirstOrDefault( candidate => candidate.IsVisible );
+		FrameworkElement? page = GetVisiblePage();
 
 		return page is not null && page.MoveFocus( new TraversalRequest( FocusNavigationDirection.First ) );
 	}

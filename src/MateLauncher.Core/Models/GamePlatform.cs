@@ -11,5 +11,6 @@ public enum GamePlatform
 	BattleNet,
 	Xbox,
 	Folder,
-	Riot
+	Riot,
+	Plugin
 }

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\MateLauncher.Core\MateLauncher.Core.csproj" />
     <ProjectReference Include="..\..\src\MateLauncher.Providers\MateLauncher.Providers.csproj" />
+    <ProjectReference Include="..\..\src\MateLauncher.Infrastructure\MateLauncher.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

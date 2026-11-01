@@ -74,7 +74,7 @@
 								<Border x:Name="PreviewCard" Width="110" Height="46" CornerRadius="8" Margin="0,0,10,0" />
 								<Border x:Name="PreviewCardHover" Width="110" Height="46" CornerRadius="8" Margin="0,0,10,0" />
 								<Border x:Name="PreviewButton" Height="28" Padding="14,0" CornerRadius="14" VerticalAlignment="Bottom">
-									<TextBlock Text="Jouer" Foreground="White" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" />
+									<TextBlock x:Name="PreviewButtonText" Text="{loc:Tr Btn_Play}" Foreground="White" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" />
 								</Border>
 							</StackPanel>
 						</StackPanel>

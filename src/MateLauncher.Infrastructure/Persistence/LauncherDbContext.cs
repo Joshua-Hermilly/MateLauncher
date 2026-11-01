@@ -7,6 +7,7 @@ public class LauncherDbContext : DbContext
 {
 	public DbSet<Game> Games => Set<Game>();
 	public DbSet<DailyPlaytime> DailyPlaytimes => Set<DailyPlaytime>();
+	public DbSet<GameSession> GameSessions => Set<GameSession>();
 
 	public LauncherDbContext( DbContextOptions<LauncherDbContext> options ) : base( options )
 	{
@@ -36,6 +37,17 @@ public class LauncherDbContext : DbContext
 			entity.Property( game => game.SizeBytes ).HasColumnName( "SIZE_BYTES" );
 			entity.Property( game => game.CategoryName ).HasColumnName( "CATEGORY_NAME" );
 			entity.HasIndex( game => new { game.Platform, game.PlatformGameId } );
+		} );
+
+		modelBuilder.Entity<GameSession>( entity =>
+		{
+			entity.ToTable( "PLAYTIME_SESSIONS" );
+			entity.HasKey( session => session.Id );
+			entity.Property( session => session.Id ).HasColumnName( "ID" );
+			entity.Property( session => session.GameId ).HasColumnName( "GAME_ID" );
+			entity.Property( session => session.StartedAt ).HasColumnName( "STARTED_AT" );
+			entity.Property( session => session.Seconds ).HasColumnName( "SECONDS" );
+			entity.HasIndex( session => session.GameId );
 		} );
 
 		modelBuilder.Entity<DailyPlaytime>( entity =>

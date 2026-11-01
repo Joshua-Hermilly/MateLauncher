@@ -121,6 +121,42 @@ public class LibraryRepository : ILibraryRepository
 		return game.PlaytimeSeconds;
 	}
 
+	public async Task AddSessionAsync( Guid gameId, DateTime startedAt, long seconds )
+	{
+		await using LauncherDbContext context = await _ContextFactory.CreateDbContextAsync();
+		context.GameSessions.Add( new GameSession { GameId = gameId, StartedAt = startedAt, Seconds = seconds } );
+		await context.SaveChangesAsync();
+	}
+
+	public async Task<int> ApplyImportedPlaytimeAsync( IReadOnlyDictionary<Guid, ImportedPlaytime> updates )
+	{
+		if ( updates.Count == 0 )
+		{
+			return 0;
+		}
+
+		await using LauncherDbContext context = await _ContextFactory.CreateDbContextAsync();
+		List<Guid> ids = updates.Keys.ToList();
+		List<Game> games = await context.Games.Where( game => ids.Contains( game.Id ) ).ToListAsync();
+
+		foreach ( Game game in games )
+		{
+			ImportedPlaytime update = updates[ game.Id ];
+			game.PlaytimeSeconds = Math.Max( game.PlaytimeSeconds, update.Seconds );
+			game.LastPlayedAt ??= update.LastPlayedAt;
+		}
+
+		await context.SaveChangesAsync();
+		return games.Count;
+	}
+
+	public async Task<IReadOnlyList<GameSession>> GetSessionsAsync( Guid gameId, int take )
+	{
+		await using LauncherDbContext context = await _ContextFactory.CreateDbContextAsync();
+		List<GameSession> sessions = await context.GameSessions.Where( session => session.GameId == gameId ).ToListAsync();
+		return sessions.OrderByDescending( session => session.StartedAt ).Take( take ).ToList();
+	}
+
 	public async Task<IReadOnlyList<DailyPlaytime>> GetDailyPlaytimeAsync( int days )
 	{
 		await using LauncherDbContext context = await _ContextFactory.CreateDbContextAsync();

@@ -82,6 +82,7 @@ public partial class ThemeEditorWindow : Window
 		PreviewCard.Background = AppTheme.ToBrush( ValueOf( "Card" ) );
 		PreviewCardHover.Background = AppTheme.ToBrush( ValueOf( "CardHover" ) );
 		PreviewButton.Background = AppTheme.ToBrush( ValueOf( "Accent" ) );
+		PreviewButtonText.Foreground = AppTheme.ToBrush( AppTheme.GetReadableTextColor( ValueOf( "Accent" ) ) );
 	}
 
 	private void OnFieldSelected( object sender, SelectionChangedEventArgs e )

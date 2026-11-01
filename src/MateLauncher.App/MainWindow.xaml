@@ -7,7 +7,7 @@
 		Title="MateLauncher" Height="780" Width="1320" MinWidth="900" MinHeight="520"
 		Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}">
 	<WindowChrome.WindowChrome>
-		<WindowChrome CaptionHeight="38" ResizeBorderThickness="6" CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="False" />
+		<WindowChrome CaptionHeight="38" ResizeBorderThickness="6" CornerRadius="0" GlassFrameThickness="-1" UseAeroCaptionButtons="False" />
 	</WindowChrome.WindowChrome>
 	<Window.InputBindings>
 		<KeyBinding Key="Escape" Command="{Binding CloseDetailCommand}" />
@@ -64,7 +64,7 @@
 					<Button.Template>
 						<ControlTemplate TargetType="Button">
 							<Border x:Name="Disc" CornerRadius="14" Background="#99000000">
-								<TextBlock Text="&#xE70F;" FontFamily="{StaticResource IconFont}" FontSize="12" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+								<TextBlock Text="&#xE70F;" FontFamily="{StaticResource IconFont}" FontSize="12" Foreground="{DynamicResource OverlayTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 							</Border>
 							<ControlTemplate.Triggers>
 								<Trigger Property="IsMouseOver" Value="True">
@@ -139,15 +139,15 @@
 		</Border>
 		<Border DockPanel.Dock="Top" Background="{DynamicResource AccentBrush}" Padding="16,7" Visibility="{Binding IsUpdateBannerVisible, Converter={StaticResource BoolToVisibility}}">
 			<DockPanel>
-				<Button DockPanel.Dock="Right" Content="{loc:Tr Update_Later}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Padding="12,4" FontSize="12" Margin="8,0,0,0" Command="{Binding DismissUpdateBannerCommand}" />
-				<Button DockPanel.Dock="Right" Content="{loc:Tr Update_Install}" Style="{StaticResource AccentButton}" Background="#44000000" Padding="12,4" FontSize="12" Command="{Binding InstallUpdateCommand}" IsEnabled="{Binding CanInstallUpdate}" />
-				<TextBlock Text="{Binding UpdateBannerText}" Foreground="White" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,16,0" />
+				<Button DockPanel.Dock="Right" Content="{loc:Tr Update_Later}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Foreground="{DynamicResource OnAccentBrush}" Padding="12,4" FontSize="12" Margin="8,0,0,0" Command="{Binding DismissUpdateBannerCommand}" />
+				<Button DockPanel.Dock="Right" Content="{loc:Tr Update_Install}" Style="{StaticResource AccentButton}" Background="#44000000" Foreground="{DynamicResource OnAccentBrush}" Padding="12,4" FontSize="12" Command="{Binding InstallUpdateCommand}" IsEnabled="{Binding CanInstallUpdate}" />
+				<TextBlock Text="{Binding UpdateBannerText}" Foreground="{DynamicResource OnAccentBrush}" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,16,0" />
 			</DockPanel>
 		</Border>
 		<Border DockPanel.Dock="Top" Background="#E5484D" Padding="16,7" Visibility="{Binding IsSafeMode, Converter={StaticResource BoolToVisibility}}">
 			<DockPanel>
-				<Button DockPanel.Dock="Right" Content="{loc:Tr Safe_Restart}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Padding="12,4" FontSize="12" Command="{Binding RestartNormalCommand}" />
-				<TextBlock Text="{loc:Tr Safe_Banner}" Foreground="White" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,16,0" />
+				<Button DockPanel.Dock="Right" Content="{loc:Tr Safe_Restart}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Foreground="{DynamicResource OverlayTextBrush}" Padding="12,4" FontSize="12" Command="{Binding RestartNormalCommand}" />
+				<TextBlock Text="{loc:Tr Safe_Banner}" Foreground="{DynamicResource OverlayTextBrush}" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,16,0" />
 			</DockPanel>
 		</Border>		<Grid>
 		<Grid.ColumnDefinitions>
@@ -155,7 +155,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 
-		<Border Background="{DynamicResource SidebarBrush}" Padding="14,22,14,16">
+		<Border x:Name="SidebarPanel" Background="{DynamicResource SidebarBrush}" Padding="14,22,14,16">
 			<DockPanel>
 				<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="6,0,0,22">
 					<controls:MateLogo Width="42" Height="42" />
@@ -169,14 +169,14 @@
 					</StackPanel>
 				</Button>
 
-				<Button DockPanel.Dock="Bottom" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="0,0,0,8" Command="{Binding OpenAddChoiceCommand}">
+				<Button DockPanel.Dock="Bottom" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,0,8" Command="{Binding OpenAddChoiceCommand}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="&#xE710;" FontFamily="{StaticResource IconFont}" Margin="0,1,8,0" />
 						<TextBlock Text="{loc:Tr Btn_AddManual}" />
 					</StackPanel>
 				</Button>
 
-				<Button DockPanel.Dock="Bottom" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="0,0,0,8" Command="{Binding OpenSettingsCommand}">
+				<Button DockPanel.Dock="Bottom" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,0,8" Command="{Binding OpenSettingsCommand}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="&#xE713;" FontFamily="{StaticResource IconFont}" Margin="0,1,8,0" />
 						<TextBlock Text="{loc:Tr Btn_Settings}" />
@@ -207,7 +207,7 @@
 							<Expander.Header>
 								<Grid>
 									<TextBlock Text="{loc:Tr Nav_Categories}" Style="{StaticResource NavHeader}" VerticalAlignment="Center" />
-									<Button Style="{StaticResource CircleButton}" Width="22" Height="22" Background="#26FFFFFF" HorizontalAlignment="Right" Margin="0,0,22,0"
+									<Button Style="{StaticResource CircleButton}" Width="22" Height="22" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Right" Margin="0,0,22,0"
 											Command="{Binding AddCategoryCommand}" ToolTip="{loc:Tr Btn_NewCategory}">
 										<TextBlock Text="&#xE710;" FontFamily="{StaticResource IconFont}" FontSize="10" />
 									</Button>
@@ -240,7 +240,7 @@
 			</DockPanel>
 		</Border>
 
-		<DockPanel x:Name="LibraryPage" Grid.Column="1" Margin="24,20,6,0">
+		<DockPanel x:Name="LibraryPage" Grid.Column="1" Margin="24,20,6,0" Visibility="{Binding IsLibraryVisible, Converter={StaticResource BoolToVisibility}}">
 			<Grid DockPanel.Dock="Top" Margin="8,0,18,16">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
@@ -274,13 +274,13 @@
 					<Button Height="36" Margin="0,0,10,0" Command="{Binding ToggleFilterPanelCommand}" ToolTip="{loc:Tr Filter_Title}" Padding="14,0">
 							<Button.Style>
 								<Style TargetType="Button" BasedOn="{StaticResource AccentButton}">
-									<Setter Property="Background" Value="#26FFFFFF" />
+									<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 									<Style.Triggers>
 										<DataTrigger Binding="{Binding IsFilterPanelOpen}" Value="True">
-											<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+											<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 										</DataTrigger>
 										<DataTrigger Binding="{Binding HasActiveFilters}" Value="True">
-											<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+											<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 										</DataTrigger>
 									</Style.Triggers>
 								</Style>
@@ -294,10 +294,10 @@
 						<Button Width="36" Height="36" Command="{Binding ShowGridCommand}" ToolTip="{loc:Tr Tip_Grid}">
 						<Button.Style>
 							<Style TargetType="Button" BasedOn="{StaticResource CircleButton}">
-								<Setter Property="Background" Value="#26FFFFFF" />
+								<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 								<Style.Triggers>
 									<DataTrigger Binding="{Binding IsListView}" Value="False">
-										<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+										<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 									</DataTrigger>
 								</Style.Triggers>
 							</Style>
@@ -307,10 +307,10 @@
 					<Button Width="36" Height="36" Margin="6,0,0,0" Command="{Binding ShowListCommand}" ToolTip="{loc:Tr Tip_List}">
 						<Button.Style>
 							<Style TargetType="Button" BasedOn="{StaticResource CircleButton}">
-								<Setter Property="Background" Value="#26FFFFFF" />
+								<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 								<Style.Triggers>
 									<DataTrigger Binding="{Binding IsListView}" Value="True">
-										<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+										<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 									</DataTrigger>
 								</Style.Triggers>
 							</Style>
@@ -336,8 +336,8 @@
 							<Button Style="{StaticResource ChipButton}" Background="{DynamicResource AccentBrush}"
 									Command="{Binding DataContext.RemoveFilterCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
 								<StackPanel Orientation="Horizontal">
-									<TextBlock Text="{Binding Label}" Foreground="White" />
-									<TextBlock Text="&#xE711;" FontFamily="{StaticResource IconFont}" FontSize="9" Foreground="White" Margin="8,1,0,0" VerticalAlignment="Center" />
+									<TextBlock Text="{Binding Label}" Foreground="{DynamicResource OnAccentBrush}" />
+									<TextBlock Text="&#xE711;" FontFamily="{StaticResource IconFont}" FontSize="9" Foreground="{DynamicResource OnAccentBrush}" Margin="8,1,0,0" VerticalAlignment="Center" />
 								</StackPanel>
 							</Button>
 						</DataTemplate>
@@ -416,7 +416,7 @@
 									Width="{Binding DataContext.ActualCardWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"
 									Height="{Binding DataContext.ActualCardHeight, RelativeSource={RelativeSource AncestorType=ListBox}}">
 								<Grid>
-									<TextBlock Visibility="{Binding HasNoCover, Converter={StaticResource BoolToVisibility}}" Text="{Binding Initials}" FontSize="44" FontWeight="Black" Foreground="#55FFFFFF"
+									<TextBlock Visibility="{Binding HasNoCover, Converter={StaticResource BoolToVisibility}}" Text="{Binding Initials}" FontSize="44" FontWeight="Black" Foreground="{DynamicResource OverlayMutedBrush}"
 											   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,30" />
 									<Image Source="{Binding CoverImagePath}" Stretch="{Binding CoverImagePath, Converter={StaticResource CoverStretch}}" />
 
@@ -430,7 +430,7 @@
 											</LinearGradientBrush>
 										</Border.Background>
 										<StackPanel>
-											<TextBlock Text="{Binding Name}" Foreground="White" FontWeight="SemiBold" TextWrapping="Wrap" MaxHeight="40" />
+											<TextBlock Text="{Binding Name}" Foreground="{DynamicResource OverlayTextBrush}" FontWeight="SemiBold" TextWrapping="Wrap" MaxHeight="40" />
 											<TextBlock Text="{Binding PlatformLabel}" Foreground="{Binding PlatformBrush}" FontSize="11" Margin="0,3,0,0" />
 										</StackPanel>
 									</Border>
@@ -454,25 +454,25 @@
 										<TextBlock Text="&#xE71A;" FontFamily="{StaticResource IconFont}" FontSize="20" />
 									</Button>
 
-									<Button x:Name="RemoveButton" Style="{StaticResource CircleButton}" Width="32" Height="32" Background="#99000000"
+									<Button x:Name="RemoveButton" Style="{StaticResource CircleButton}" Width="32" Height="32" Background="#99000000" Foreground="{DynamicResource TextBrush}"
 											HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8" Visibility="Collapsed" ToolTip="{loc:Tr Btn_Remove}"
 											Command="{Binding DataContext.RemoveGameCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
 											CommandParameter="{Binding}">
-										<TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" />
+										<TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="{DynamicResource OverlayTextBrush}" />
 									</Button>
 
-									<Button x:Name="ConfigureButton" Style="{StaticResource CircleButton}" Width="32" Height="32" Background="#99000000"
+									<Button x:Name="ConfigureButton" Style="{StaticResource CircleButton}" Width="32" Height="32" Background="#99000000" Foreground="{DynamicResource TextBrush}"
 											HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,48,0" Visibility="Collapsed" ToolTip="{loc:Tr Btn_Configure}"
 											Command="{Binding DataContext.ConfigureGameCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
 											CommandParameter="{Binding}">
-										<TextBlock Text="&#xE713;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" />
+										<TextBlock Text="&#xE713;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="{DynamicResource OverlayTextBrush}" />
 									</Button>
 
-									<Button x:Name="FavoriteButton" Style="{StaticResource CircleButton}" Width="32" Height="32" Background="#99000000"
+									<Button x:Name="FavoriteButton" Style="{StaticResource CircleButton}" Width="32" Height="32" Background="#99000000" Foreground="{DynamicResource TextBrush}"
 											HorizontalAlignment="Right" VerticalAlignment="Top" Margin="8" Visibility="Collapsed"
 											Command="{Binding DataContext.ToggleFavoriteCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
 											CommandParameter="{Binding}">
-										<TextBlock x:Name="FavoriteGlyph" Text="&#xE734;" FontFamily="{StaticResource IconFont}" FontSize="14" Foreground="White" />
+										<TextBlock x:Name="FavoriteGlyph" Text="&#xE734;" FontFamily="{StaticResource IconFont}" FontSize="14" Foreground="{DynamicResource OverlayTextBrush}" />
 									</Button>
 								</Grid>
 							</Border>
@@ -487,7 +487,7 @@
 								<DataTrigger Binding="{Binding IsFavorite}" Value="True">
 									<Setter TargetName="FavoriteButton" Property="Visibility" Value="Visible" />
 									<Setter TargetName="FavoriteGlyph" Property="Text" Value="&#xE735;" />
-									<Setter TargetName="FavoriteGlyph" Property="Foreground" Value="#FFD34D" />
+									<Setter TargetName="FavoriteGlyph" Property="Foreground" Value="{DynamicResource FavoriteBrush}" />
 								</DataTrigger>
 							</DataTemplate.Triggers>
 						</DataTemplate>
@@ -526,7 +526,7 @@
 
 										<Border Width="46" Height="62" CornerRadius="5" ClipToBounds="True" Background="{Binding PlaceholderBrush}" IsHitTestVisible="False">
 											<Grid>
-												<TextBlock Visibility="{Binding HasNoCover, Converter={StaticResource BoolToVisibility}}" Text="{Binding Initials}" FontSize="16" FontWeight="Black" Foreground="#66FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center" />
+												<TextBlock Visibility="{Binding HasNoCover, Converter={StaticResource BoolToVisibility}}" Text="{Binding Initials}" FontSize="16" FontWeight="Black" Foreground="{DynamicResource OverlayMutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 												<Image Source="{Binding CoverImagePath}" Stretch="{Binding CoverImagePath, Converter={StaticResource CoverStretch}}" />
 											</Grid>
 										</Border>
@@ -552,26 +552,26 @@
 										</StackPanel>
 
 										<StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center">
-											<Button Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Margin="0,0,8,0" ToolTip="{loc:Tr Btn_Remove}"
+											<Button Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,0" ToolTip="{loc:Tr Btn_Remove}"
 													Command="{Binding DataContext.RemoveGameCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
 													CommandParameter="{Binding}">
-												<TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" />
+												<TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="{DynamicResource OverlayTextBrush}" />
 											</Button>
-											<Button Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Margin="0,0,8,0" ToolTip="{loc:Tr Btn_Configure}"
+											<Button Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,0" ToolTip="{loc:Tr Btn_Configure}"
 													Command="{Binding DataContext.ConfigureGameCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
 													CommandParameter="{Binding}">
-												<TextBlock Text="&#xE713;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" />
+												<TextBlock Text="&#xE713;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="{DynamicResource OverlayTextBrush}" />
 											</Button>
-											<Button Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Margin="0,0,10,0"
+											<Button Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,10,0"
 													Command="{Binding DataContext.ToggleFavoriteCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
 													CommandParameter="{Binding}">
-												<TextBlock FontFamily="{StaticResource IconFont}" FontSize="14" Foreground="White" Text="&#xE734;">
+												<TextBlock FontFamily="{StaticResource IconFont}" FontSize="14" Foreground="{DynamicResource OverlayTextBrush}" Text="&#xE734;">
 													<TextBlock.Style>
 														<Style TargetType="TextBlock">
 															<Style.Triggers>
 																<DataTrigger Binding="{Binding IsFavorite}" Value="True">
 																	<Setter Property="Text" Value="&#xE735;" />
-																	<Setter Property="Foreground" Value="#FFD34D" />
+																	<Setter Property="Foreground" Value="{DynamicResource FavoriteBrush}" />
 																</DataTrigger>
 															</Style.Triggers>
 														</Style>
@@ -629,7 +629,7 @@
 				</Rectangle.Fill>
 			</Rectangle>
 
-			<Button Style="{StaticResource AccentButton}" Background="#33000000" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,24,0,0"
+			<Button Style="{StaticResource AccentButton}" Background="#33000000" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,24,0,0"
 					Command="{Binding CloseDetailCommand}">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="&#xE72B;" FontFamily="{StaticResource IconFont}" Margin="0,1,8,0" />
@@ -645,13 +645,13 @@
 						<TextBlock Text="{loc:Tr Btn_Stop}" />
 					</StackPanel>
 				</Button>
-				<Button Style="{StaticResource AccentButton}" Background="#33000000" Command="{Binding ConfigureGameCommand}" CommandParameter="{Binding SelectedGame}">
+				<Button Style="{StaticResource AccentButton}" Background="#33000000" Foreground="{DynamicResource TextBrush}" Command="{Binding ConfigureGameCommand}" CommandParameter="{Binding SelectedGame}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="&#xE713;" FontFamily="{StaticResource IconFont}" Margin="0,1,8,0" />
 						<TextBlock Text="{loc:Tr Btn_Configure}" />
 					</StackPanel>
 				</Button>
-				<Button Style="{StaticResource AccentButton}" Background="#33000000" Margin="8,0,0,0" Command="{Binding RemoveGameCommand}" CommandParameter="{Binding SelectedGame}">
+				<Button Style="{StaticResource AccentButton}" Background="#33000000" Foreground="{DynamicResource TextBrush}" Margin="8,0,0,0" Command="{Binding RemoveGameCommand}" CommandParameter="{Binding SelectedGame}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}" Margin="0,1,8,0" />
 						<TextBlock Text="{loc:Tr Btn_Remove}" />
@@ -659,7 +659,8 @@
 				</Button>
 			</StackPanel>
 
-			<Grid Margin="56,90,56,40" VerticalAlignment="Top">
+			<ScrollViewer x:Name="DetailScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,38,0,0">
+				<Grid Margin="56,52,56,40" VerticalAlignment="Top">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
@@ -667,7 +668,7 @@
 
 				<Border Width="260" Height="390" CornerRadius="12" ClipToBounds="True" VerticalAlignment="Top" Background="{Binding SelectedGame.PlaceholderBrush}">
 					<Grid>
-						<TextBlock Visibility="{Binding SelectedGame.HasNoCover, Converter={StaticResource BoolToVisibility}}" Text="{Binding SelectedGame.Initials}" FontSize="60" FontWeight="Black" Foreground="#55FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center" />
+						<TextBlock Visibility="{Binding SelectedGame.HasNoCover, Converter={StaticResource BoolToVisibility}}" Text="{Binding SelectedGame.Initials}" FontSize="60" FontWeight="Black" Foreground="{DynamicResource OverlayMutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 						<Image Source="{Binding SelectedGame.CoverImagePath}" Stretch="{Binding SelectedGame.CoverImagePath, Converter={StaticResource CoverStretch}}" />
 					</Grid>
 				</Border>
@@ -684,7 +685,7 @@
 								<TextBlock Text="{loc:Tr Btn_Play}" />
 							</StackPanel>
 						</Button>
-						<Button Style="{StaticResource AccentButton}" Background="#33FFFFFF" Margin="12,0,0,0"
+						<Button Style="{StaticResource AccentButton}" Background="#33FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="12,0,0,0"
 								Command="{Binding ToggleFavoriteCommand}" CommandParameter="{Binding SelectedGame}">
 							<StackPanel Orientation="Horizontal">
 								<TextBlock Text="&#xE734;" FontFamily="{StaticResource IconFont}" Margin="0,2,8,0">
@@ -693,7 +694,7 @@
 											<Style.Triggers>
 												<DataTrigger Binding="{Binding SelectedGame.IsFavorite}" Value="True">
 													<Setter Property="Text" Value="&#xE735;" />
-													<Setter Property="Foreground" Value="#FFD34D" />
+													<Setter Property="Foreground" Value="{DynamicResource FavoriteBrush}" />
 												</DataTrigger>
 											</Style.Triggers>
 										</Style>
@@ -702,7 +703,7 @@
 								<TextBlock Text="{loc:Tr Btn_Favorite}" />
 							</StackPanel>
 						</Button>
-						<Button Style="{StaticResource AccentButton}" Background="#33FFFFFF" Margin="12,0,0,0"
+						<Button Style="{StaticResource AccentButton}" Background="#33FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="12,0,0,0"
 								Command="{Binding OpenInstallFolderCommand}" CommandParameter="{Binding SelectedGame}"
 								IsEnabled="{Binding SelectedGame.HasInstallPath}">
 							<StackPanel Orientation="Horizontal">
@@ -712,6 +713,16 @@
 						</Button>
 					</StackPanel>
 
+					<StackPanel Margin="0,22,0,0" Visibility="{Binding HasGameInfo, Converter={StaticResource BoolToVisibility}}">
+						<TextBlock Text="{Binding GameInfoLine}" Foreground="{DynamicResource AccentBrush}" FontWeight="SemiBold" TextWrapping="Wrap" />
+						<TextBlock Text="{Binding GameSummary}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" LineHeight="21" Margin="0,8,0,0" />
+					</StackPanel>
+						<Border Margin="0,22,0,0" Padding="14,12" CornerRadius="10" Background="#14FFFFFF" Visibility="{Binding HasGameFriends, Converter={StaticResource BoolToVisibility}}">
+							<StackPanel>
+								<TextBlock Text="{loc:Tr Friends_Title}" Style="{StaticResource SectionTitle}" />
+								<TextBlock Text="{Binding GameFriendsText}" TextWrapping="Wrap" LineHeight="21" Margin="0,6,0,0" />
+							</StackPanel>
+						</Border>
 					<WrapPanel Margin="0,40,0,0">
 						<StackPanel Margin="0,0,48,16">
 							<TextBlock Text="{loc:Tr Label_Playtime}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource MutedTextBrush}" />
@@ -747,6 +758,49 @@
 					<TextBlock Text="{loc:Tr Label_Install}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource MutedTextBrush}" Margin="0,16,0,0" />
 											<TextBlock Text="{Binding SelectedGame.InstallPath}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
 
+					<StackPanel Margin="0,26,0,0" Visibility="{Binding HasSessions, Converter={StaticResource BoolToVisibility}}">
+						<TextBlock Text="{loc:Tr Sessions_Title}" Style="{StaticResource SectionTitle}" />
+						<TextBlock Text="{Binding SessionsSummary}" Foreground="{DynamicResource AccentBrush}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,6,0,0" />
+						<ItemsControl ItemsSource="{Binding RecentSessions}" Margin="0,6,0,0">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Text}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12.5" Margin="0,2,0,0" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+					<StackPanel Margin="0,26,0,0">
+						<TextBlock Text="{loc:Tr Saves_Title}" Style="{StaticResource SectionTitle}" />
+						<TextBlock Text="{Binding SavesStatus}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" FontSize="12.5" Margin="0,6,0,0" />
+						<ItemsControl ItemsSource="{Binding SaveLocations}" Margin="0,10,0,0">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Border Background="#14FFFFFF" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="*" />
+												<ColumnDefinition Width="Auto" />
+											</Grid.ColumnDefinitions>
+											<StackPanel VerticalAlignment="Center">
+												<TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Path}" />
+												<TextBlock Text="{Binding Details}" Foreground="{DynamicResource MutedTextBrush}" FontSize="11.5" Margin="0,3,0,0" />
+											</StackPanel>
+											<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+												<Button Style="{StaticResource CircleButton}" Width="32" Height="32" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,6,0" ToolTip="{loc:Tr Saves_Copy}"
+															Command="{Binding DataContext.CopySavePathCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding Path}">
+													<TextBlock Text="&#xE8C8;" FontFamily="{StaticResource IconFont}" FontSize="13" />
+												</Button>
+												<Button Style="{StaticResource CircleButton}" Width="32" Height="32" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" ToolTip="{loc:Tr Saves_Open}"
+															Command="{Binding DataContext.OpenSaveFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding Path}">
+													<TextBlock Text="&#xE838;" FontFamily="{StaticResource IconFont}" FontSize="13" />
+												</Button>
+											</StackPanel>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
 						<StackPanel Margin="0,26,0,0" Visibility="{Binding ShowAchievements, Converter={StaticResource BoolToVisibility}}">
 							<Grid>
 								<TextBlock Text="{loc:Tr Ach_Title}" Style="{StaticResource SectionTitle}" VerticalAlignment="Center" />
@@ -791,6 +845,7 @@
 						</StackPanel>
 				</StackPanel>
 			</Grid>
+			</ScrollViewer>
 		</Grid>
 
 		<Grid x:Name="StatsPage" Grid.Column="1" Style="{StaticResource PageOverlay}" Visibility="{Binding IsStatsOpen, Converter={StaticResource BoolToVisibility}}">
@@ -978,7 +1033,7 @@
 					<TextBlock Text="{loc:Tr Downloads_Title}" Style="{StaticResource PageTitle}" />
 					<TextBlock Text="{loc:Tr Downloads_Subtitle}" Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
 
-					<Button Style="{StaticResource AccentButton}" Background="#26FFFFFF" HorizontalAlignment="Left" Margin="0,22,0,0" Command="{Binding RefreshUpdatesCommand}">
+					<Button Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Left" Margin="0,22,0,0" Command="{Binding RefreshUpdatesCommand}">
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="&#xE72C;" FontFamily="{StaticResource IconFont}" Margin="0,1,8,0" />
 							<TextBlock Text="{loc:Tr Downloads_Refresh}" />
@@ -1006,7 +1061,7 @@
 										</Ellipse.Style>
 									</Ellipse>
 									<TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Text="{Binding SteamStatusText}" />
-									<Button Grid.Column="2" Content="{loc:Tr Downloads_OpenSteam}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" Command="{Binding StartSteamCommand}" />
+									<Button Grid.Column="2" Content="{loc:Tr Downloads_OpenSteam}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" Command="{Binding StartSteamCommand}" />
 								</Grid>
 
 								<TextBlock Text="{loc:Tr Downloads_SearchTitle}" Style="{StaticResource SectionTitle}" Margin="0,20,0,10" />
@@ -1078,14 +1133,169 @@
 
 					<TextBlock Text="{loc:Tr Downloads_OpenClients}" Style="{StaticResource SectionTitle}" Margin="0,30,0,12" />
 					<WrapPanel>
-						<Button Content="Steam" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="steam://nav/downloads" />
-						<Button Content="Epic Games" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="com.epicgames.launcher://store" />
-						<Button Content="Ubisoft Connect" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="uplay://" />
-						<Button Content="EA App" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="origin2://library/open" />
-						<Button Content="Battle.net" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="battlenet://" />
-						<Button Content="Microsoft Store" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="ms-windows-store://downloadsandupdates" />
+						<Button Content="Steam" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="steam://nav/downloads" />
+						<Button Content="Epic Games" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="com.epicgames.launcher://store" />
+						<Button Content="Ubisoft Connect" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="uplay://" />
+						<Button Content="EA App" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="origin2://library/open" />
+						<Button Content="Battle.net" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="battlenet://" />
+						<Button Content="Microsoft Store" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,8" Command="{Binding OpenClientCommand}" CommandParameter="ms-windows-store://downloadsandupdates" />
 					</WrapPanel>
 					<TextBlock Text="{loc:Tr Downloads_Note}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,12,0,0" />
+				</StackPanel>
+			</ScrollViewer>
+		</Grid>
+
+		<Grid x:Name="HomePage" Grid.Column="1" Style="{StaticResource PageOverlay}" Visibility="{Binding IsHomeVisible, Converter={StaticResource BoolToVisibility}}">
+			<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+				<StackPanel Margin="44,40,44,40">
+					<TextBlock Text="{loc:Tr Home_Title}" Style="{StaticResource PageTitle}" />
+
+					<Border Margin="0,22,0,0" CornerRadius="14" Padding="20" Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Visibility="{Binding HasHomeHero, Converter={StaticResource BoolToVisibility}}">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Border Width="120" Height="180" CornerRadius="10" ClipToBounds="True" Background="{Binding HomeHero.PlaceholderBrush}" Margin="0,0,22,0">
+								<Image Source="{Binding HomeHero.CoverImagePath}" Stretch="UniformToFill" />
+							</Border>
+							<StackPanel Grid.Column="1" VerticalAlignment="Center">
+								<TextBlock Text="{loc:Tr Home_Resume}" Style="{StaticResource SectionTitle}" />
+								<TextBlock Text="{Binding HomeHero.Name}" FontSize="28" FontWeight="Bold" TextWrapping="Wrap" Margin="0,6,0,0" />
+								<TextBlock Text="{Binding HomeHeroText}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,6,0,0" />
+								<StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+									<Button Style="{StaticResource AccentButton}" MinWidth="150" FontSize="15" Command="{Binding LaunchGameCommand}" CommandParameter="{Binding HomeHero}">
+										<StackPanel Orientation="Horizontal">
+											<TextBlock Text="&#xE768;" FontFamily="{StaticResource IconFont}" Margin="0,2,10,0" />
+											<TextBlock Text="{loc:Tr Home_ResumeButton}" />
+										</StackPanel>
+									</Button>
+									<Button Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="10,0,0,0" Command="{Binding OpenDetailCommand}" CommandParameter="{Binding HomeHero}" Content="{loc:Tr Home_OpenPage}" />
+								</StackPanel>
+							</StackPanel>
+						</Grid>
+					</Border>
+
+					<TextBlock Text="{loc:Tr Home_Empty}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,22,0,0">
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="Visibility" Value="Collapsed" />
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding HasHomeHero}" Value="False">
+										<Setter Property="Visibility" Value="Visible" />
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+
+				<StackPanel Margin="0,30,0,0" Visibility="{Binding HasHomeContinue, Converter={StaticResource BoolToVisibility}}">
+					<TextBlock Text="{loc:Tr Home_Continue}" Style="{StaticResource SectionTitle}" />
+					<ItemsControl ItemsSource="{Binding HomeContinue}" Margin="0,12,0,0">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Horizontal" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Button Style="{StaticResource HomeCardButton}" Command="{Binding DataContext.OpenDetailCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+				<StackPanel Margin="0,30,0,0" Visibility="{Binding HasHomeBacklog, Converter={StaticResource BoolToVisibility}}">
+					<TextBlock Text="{loc:Tr Home_Backlog}" Style="{StaticResource SectionTitle}" />
+					<ItemsControl ItemsSource="{Binding HomeBacklog}" Margin="0,12,0,0">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Horizontal" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Button Style="{StaticResource HomeCardButton}" Command="{Binding DataContext.OpenDetailCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+				<StackPanel Margin="0,30,0,0" Visibility="{Binding HasHomeFavorites, Converter={StaticResource BoolToVisibility}}">
+					<TextBlock Text="{loc:Tr Home_Favorites}" Style="{StaticResource SectionTitle}" />
+					<ItemsControl ItemsSource="{Binding HomeFavorites}" Margin="0,12,0,0">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Horizontal" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Button Style="{StaticResource HomeCardButton}" Command="{Binding DataContext.OpenDetailCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+				</StackPanel>
+			</ScrollViewer>
+		</Grid>
+
+		<Grid x:Name="FriendsPage" Grid.Column="1" Style="{StaticResource PageOverlay}" Visibility="{Binding IsFriendsOpen, Converter={StaticResource BoolToVisibility}}">
+			<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+				<StackPanel Margin="44,40,44,40">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<StackPanel>
+							<TextBlock Text="{loc:Tr Friends_Title}" Style="{StaticResource PageTitle}" />
+							<TextBlock Text="{Binding FriendsStatus}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
+						</StackPanel>
+						<Button Grid.Column="1" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" Command="{Binding RefreshFriendsCommand}">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="&#xE72C;" FontFamily="{StaticResource IconFont}" Margin="0,1,8,0" />
+								<TextBlock Text="{loc:Tr Downloads_Refresh}" />
+							</StackPanel>
+						</Button>
+					</Grid>
+
+					<ItemsControl ItemsSource="{Binding Friends}" Margin="0,20,0,0">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Style="{StaticResource OutlineCard}" Padding="14" Margin="0,0,0,10">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="Auto" />
+										</Grid.ColumnDefinitions>
+										<Grid Width="46" Height="46" Margin="0,0,14,0">
+											<Ellipse Fill="{DynamicResource BackgroundBrush}" />
+											<Ellipse Margin="3">
+												<Ellipse.Fill>
+													<ImageBrush ImageSource="{Binding AvatarUrl}" Stretch="UniformToFill" />
+												</Ellipse.Fill>
+											</Ellipse>
+											<Ellipse Stroke="{Binding StatusBrush}" StrokeThickness="2" />
+										</Grid>
+										<StackPanel Grid.Column="1" VerticalAlignment="Center">
+											<TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+											<TextBlock Text="{Binding StatusText}" Foreground="{Binding StatusBrush}" FontSize="12.5" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
+										</StackPanel>
+										<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+											<Button Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,0" ToolTip="{loc:Tr Friends_Chat}"
+														Command="{Binding DataContext.OpenClientCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding ChatUri}">
+												<TextBlock Text="&#xE8BD;" FontFamily="{StaticResource IconFont}" FontSize="14" />
+											</Button>
+											<Button Style="{StaticResource CircleButton}" Width="34" Height="34" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" ToolTip="{loc:Tr Friends_Profile}"
+														Command="{Binding DataContext.OpenClientCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding ProfileUri}">
+												<TextBlock Text="&#xE77B;" FontFamily="{StaticResource IconFont}" FontSize="14" />
+											</Button>
+										</StackPanel>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 				</StackPanel>
 			</ScrollViewer>
 		</Grid>
@@ -1108,10 +1318,10 @@
 							<TextBlock Text="{Binding NewsStatus}" Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
 						</StackPanel>
 						<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-							<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" Margin="0,0,8,0" Command="{Binding ToggleNewsPanelCommand}" ToolTip="{loc:Tr News_TogglePanel}">
+							<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,0" Command="{Binding ToggleNewsPanelCommand}" ToolTip="{loc:Tr News_TogglePanel}">
 								<TextBlock Text="&#xE8A0;" FontFamily="{StaticResource IconFont}" FontSize="14" />
 							</Button>
-							<Button Style="{StaticResource AccentButton}" Background="#26FFFFFF" Command="{Binding RefreshNewsCommand}">
+							<Button Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Command="{Binding RefreshNewsCommand}">
 							<StackPanel Orientation="Horizontal">
 								<TextBlock Text="&#xE72C;" FontFamily="{StaticResource IconFont}" Margin="0,1,8,0" />
 								<TextBlock Text="{loc:Tr Downloads_Refresh}" />
@@ -1167,7 +1377,7 @@
 										<TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
 										<TextBlock Text="{Binding Url}" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextTrimming="CharacterEllipsis" ToolTip="{Binding Url}" />
 									</StackPanel>
-									<Button Grid.Column="1" Style="{StaticResource CircleButton}" Width="30" Height="30" Background="#26FFFFFF" Margin="8,0,0,0" ToolTip="{loc:Tr Menu_Delete}"
+									<Button Grid.Column="1" Style="{StaticResource CircleButton}" Width="30" Height="30" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="8,0,0,0" ToolTip="{loc:Tr Menu_Delete}"
 											Command="{Binding DataContext.RemoveFeedCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
 										<TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}" FontSize="12" />
 									</Button>
@@ -1269,7 +1479,7 @@
 
 						<DockPanel Margin="0,18,0,12">
 							<StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-								<Button Content="{loc:Tr Theme_Import}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Padding="12,5" FontSize="12" Command="{Binding ImportThemeCommand}" />
+								<Button Content="{loc:Tr Theme_Import}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Foreground="{DynamicResource TextBrush}" Padding="12,5" FontSize="12" Command="{Binding ImportThemeCommand}" />
 								<Button Content="{loc:Tr Theme_Create}" Style="{StaticResource AccentButton}" Padding="12,5" FontSize="12" Margin="8,0,0,0" Command="{Binding CreateThemeCommand}" />
 							</StackPanel>
 							<TextBlock Text="{loc:Tr Theme_Mine}" Style="{StaticResource SectionTitle}" VerticalAlignment="Center" />
@@ -1320,7 +1530,7 @@
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
 
-						<Button Content="{loc:Tr Accent_Custom}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Padding="12,6" FontSize="12" HorizontalAlignment="Left" Margin="0,12,0,0" Command="{Binding PickCustomAccentCommand}" />
+						<Button Content="{loc:Tr Accent_Custom}" Style="{StaticResource AccentButton}" Background="#33FFFFFF" Foreground="{DynamicResource TextBrush}" Padding="12,6" FontSize="12" HorizontalAlignment="Left" Margin="0,12,0,0" Command="{Binding PickCustomAccentCommand}" />
 
 						<TextBlock Text="{loc:Tr Appearance_Display}" Style="{StaticResource SectionTitle}" Margin="0,30,0,12" />
 						<Border Style="{StaticResource OutlineCard}">
@@ -1355,10 +1565,10 @@
 										<Button Content="{loc:Tr Appearance_Grid}" Command="{Binding ShowGridCommand}">
 											<Button.Style>
 												<Style TargetType="Button" BasedOn="{StaticResource AccentButton}">
-													<Setter Property="Background" Value="#26FFFFFF" />
+													<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 													<Style.Triggers>
 														<DataTrigger Binding="{Binding IsListView}" Value="False">
-															<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+															<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 														</DataTrigger>
 													</Style.Triggers>
 												</Style>
@@ -1367,10 +1577,10 @@
 										<Button Content="{loc:Tr Appearance_List}" Command="{Binding ShowListCommand}" Margin="8,0,0,0">
 											<Button.Style>
 												<Style TargetType="Button" BasedOn="{StaticResource AccentButton}">
-													<Setter Property="Background" Value="#26FFFFFF" />
+													<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 													<Style.Triggers>
 														<DataTrigger Binding="{Binding IsListView}" Value="True">
-															<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+															<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 														</DataTrigger>
 													</Style.Triggers>
 												</Style>
@@ -1391,6 +1601,22 @@
 										<TextBlock Text="{loc:Tr Appearance_AnimationsDesc}" Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
 									</StackPanel>
 									<CheckBox Grid.Column="1" Style="{StaticResource SwitchStyle}" IsChecked="{Binding AnimationsEnabled, Mode=TwoWay}" VerticalAlignment="Center" />
+								</Grid>
+								<Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,18" />
+
+								<Grid IsEnabled="{Binding IsTranslucencySupported}">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="Auto" />
+									</Grid.ColumnDefinitions>
+									<StackPanel VerticalAlignment="Center">
+										<TextBlock Text="{loc:Tr Appearance_Translucency}" FontSize="15" FontWeight="SemiBold" />
+										<TextBlock Text="{loc:Tr Appearance_TranslucencyDesc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
+									</StackPanel>
+									<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+										<Slider Width="180" Minimum="0" Maximum="100" SmallChange="1" LargeChange="10" IsSnapToTickEnabled="True" TickFrequency="1" Value="{Binding TranslucencyLevel, Mode=TwoWay}" VerticalAlignment="Center" />
+										<TextBlock Text="{Binding TranslucencyLevel, StringFormat={}{0:0} %}" Width="56" TextAlignment="Right" Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center" />
+									</StackPanel>
 								</Grid>
 							</StackPanel>
 						</Border>
@@ -1426,10 +1652,10 @@
 										<Button Content="Français" Command="{Binding SetLanguageCommand}" CommandParameter="fr">
 											<Button.Style>
 												<Style TargetType="Button" BasedOn="{StaticResource AccentButton}">
-													<Setter Property="Background" Value="#26FFFFFF" />
+													<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 													<Style.Triggers>
 														<DataTrigger Binding="{Binding Language}" Value="fr">
-															<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+															<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 														</DataTrigger>
 													</Style.Triggers>
 												</Style>
@@ -1438,10 +1664,10 @@
 										<Button Content="English" Command="{Binding SetLanguageCommand}" CommandParameter="en" Margin="8,0,0,0">
 											<Button.Style>
 												<Style TargetType="Button" BasedOn="{StaticResource AccentButton}">
-													<Setter Property="Background" Value="#26FFFFFF" />
+													<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 													<Style.Triggers>
 														<DataTrigger Binding="{Binding Language}" Value="en">
-															<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+															<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 														</DataTrigger>
 													</Style.Triggers>
 												</Style>
@@ -1475,7 +1701,7 @@
 										<TextBlock Text="{loc:Tr General_Hidden}" FontSize="15" FontWeight="SemiBold" />
 										<TextBlock Text="{loc:Tr General_HiddenDesc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
 									</StackPanel>
-									<Button Grid.Column="1" Content="{loc:Tr General_ShowHidden}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" VerticalAlignment="Center" Command="{Binding UnhideAllCommand}" />
+									<Button Grid.Column="1" Content="{loc:Tr General_ShowHidden}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" Command="{Binding UnhideAllCommand}" />
 								</Grid>
 
 								<Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,18" />
@@ -1489,7 +1715,7 @@
 										<TextBlock Text="{loc:Tr Diag_Safe}" FontSize="15" FontWeight="SemiBold" />
 										<TextBlock Text="{loc:Tr Diag_SafeDesc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
 									</StackPanel>
-									<Button Grid.Column="1" Content="{loc:Tr Diag_SafeButton}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" VerticalAlignment="Center" Command="{Binding RestartSafeCommand}" />
+									<Button Grid.Column="1" Content="{loc:Tr Diag_SafeButton}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" Command="{Binding RestartSafeCommand}" />
 								</Grid>
 
 								<Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,18" />
@@ -1503,7 +1729,7 @@
 										<TextBlock Text="{loc:Tr Diag_Debug}" FontSize="15" FontWeight="SemiBold" />
 										<TextBlock Text="{loc:Tr Diag_DebugDesc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
 									</StackPanel>
-									<Button Grid.Column="1" Content="{loc:Tr Diag_DebugButton}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" VerticalAlignment="Center" Command="{Binding RestartDebugCommand}" />
+									<Button Grid.Column="1" Content="{loc:Tr Diag_DebugButton}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" Command="{Binding RestartDebugCommand}" />
 								</Grid>
 
 								<Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,18" />
@@ -1517,7 +1743,7 @@
 										<TextBlock Text="{loc:Tr Diag_Data}" FontSize="15" FontWeight="SemiBold" />
 										<TextBlock Text="{loc:Tr Diag_DataDesc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
 									</StackPanel>
-									<Button Grid.Column="1" Content="{loc:Tr Diag_DataButton}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" VerticalAlignment="Center" Command="{Binding OpenDataFolderCommand}" />
+									<Button Grid.Column="1" Content="{loc:Tr Diag_DataButton}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" Command="{Binding OpenDataFolderCommand}" />
 								</Grid>
 							</StackPanel>
 						</Border>
@@ -1560,7 +1786,7 @@
 										<TextBlock Text="{loc:Tr General_Hotkey}" FontSize="15" FontWeight="SemiBold" />
 										<TextBlock Text="{loc:Tr General_HotkeyDesc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
 									</StackPanel>
-									<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"><Border CornerRadius="6" Background="#26FFFFFF" Padding="10,6" Margin="0,0,8,0"><TextBlock Text="{Binding OverlayHotkeyText}" FontFamily="{StaticResource MonoFont}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" /></Border><Button Content="{loc:Tr General_HotkeyChange}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Command="{Binding ChangeOverlayHotkeyCommand}" /></StackPanel>
+									<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"><Border CornerRadius="6" Background="#26FFFFFF" Padding="10,6" Margin="0,0,8,0"><TextBlock Text="{Binding OverlayHotkeyText}" FontFamily="{StaticResource MonoFont}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" /></Border><Button Content="{loc:Tr General_HotkeyChange}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Command="{Binding ChangeOverlayHotkeyCommand}" /></StackPanel>
 								</Grid>
 
 								<Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,18" />
@@ -1571,10 +1797,28 @@
 										<ColumnDefinition Width="Auto" />
 									</Grid.ColumnDefinitions>
 									<StackPanel VerticalAlignment="Center" Margin="0,0,24,0">
+										<TextBlock Text="{loc:Tr Perf_Title}" FontSize="15" FontWeight="SemiBold" />
+										<TextBlock Text="{loc:Tr Perf_Desc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
+									</StackPanel>
+									<CheckBox Grid.Column="1" Style="{StaticResource SwitchStyle}" IsChecked="{Binding PerformanceModeEnabled, Mode=TwoWay}" VerticalAlignment="Center" />
+								</Grid>
+								<StackPanel Margin="0,12,0,0" IsEnabled="{Binding PerformanceModeEnabled}">
+									<TextBlock Text="{loc:Tr Perf_Programs}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" />
+									<TextBox Text="{Binding PerformancePrograms, UpdateSourceTrigger=LostFocus}" Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}" CaretBrush="{DynamicResource TextBrush}" BorderThickness="0" Padding="10,8" Margin="0,4,0,6" />
+									<TextBlock Text="{loc:Tr Perf_Hint}" Foreground="{DynamicResource MutedTextBrush}" FontSize="11.5" TextWrapping="Wrap" />
+								</StackPanel>
+
+								<Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,18" />
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="Auto" />
+									</Grid.ColumnDefinitions>
+									<StackPanel VerticalAlignment="Center" Margin="0,0,24,0">
 										<TextBlock Text="{loc:Tr Backup_Title}" FontSize="15" FontWeight="SemiBold" />
 										<TextBlock Text="{Binding BackupStatus}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0" />
 									</StackPanel>
-									<WrapPanel Grid.Column="1" VerticalAlignment="Center" MaxWidth="330" HorizontalAlignment="Right"><Button Content="{loc:Tr Backup_Now}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" Margin="0,0,6,6" Command="{Binding BackupNowCommand}" /><Button Content="{loc:Tr Backup_Export}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" Margin="0,0,6,6" Command="{Binding ExportBackupCommand}" /><Button Content="{loc:Tr Backup_Import}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" Margin="0,0,6,6" Command="{Binding ImportBackupCommand}" /><Button Content="{loc:Tr Backup_Open}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" Margin="0,0,0,6" Command="{Binding OpenBackupsFolderCommand}" /></WrapPanel>
+									<WrapPanel Grid.Column="1" VerticalAlignment="Center" MaxWidth="330" HorizontalAlignment="Right"><Button Content="{loc:Tr Backup_Now}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" Margin="0,0,6,6" Command="{Binding BackupNowCommand}" /><Button Content="{loc:Tr Backup_Export}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" Margin="0,0,6,6" Command="{Binding ExportBackupCommand}" /><Button Content="{loc:Tr Backup_Import}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" Margin="0,0,6,6" Command="{Binding ImportBackupCommand}" /><Button Content="{loc:Tr Backup_Open}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" Margin="0,0,0,6" Command="{Binding OpenBackupsFolderCommand}" /></WrapPanel>
 								</Grid>
 
 							</StackPanel>
@@ -1609,7 +1853,7 @@
 									<TextBlock Text="{loc:Tr Library_AddLibrary}" />
 								</StackPanel>
 							</Button>
-							<Button Style="{StaticResource AccentButton}" Background="#26FFFFFF" Margin="10,0,0,0" Command="{Binding SyncCommand}">
+							<Button Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="10,0,0,0" Command="{Binding SyncCommand}">
 								<StackPanel Orientation="Horizontal">
 									<TextBlock Text="&#xE895;" FontFamily="{StaticResource IconFont}" Margin="0,1,8,0" />
 									<TextBlock Text="{loc:Tr Library_Scan}" />
@@ -1635,10 +1879,10 @@
 										<Button Content="{loc:Tr Folders_SortName}" Command="{Binding SetFolderSortCommand}" CommandParameter="Name">
 											<Button.Style>
 												<Style TargetType="Button" BasedOn="{StaticResource AccentButton}">
-													<Setter Property="Background" Value="#26FFFFFF" />
+													<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 													<Style.Triggers>
 														<DataTrigger Binding="{Binding FolderSort}" Value="Name">
-															<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+															<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 														</DataTrigger>
 													</Style.Triggers>
 												</Style>
@@ -1647,10 +1891,10 @@
 										<Button Content="{loc:Tr Folders_SortManual}" Command="{Binding SetFolderSortCommand}" CommandParameter="Manual" Margin="8,0,0,0">
 											<Button.Style>
 												<Style TargetType="Button" BasedOn="{StaticResource AccentButton}">
-													<Setter Property="Background" Value="#26FFFFFF" />
+													<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 													<Style.Triggers>
 														<DataTrigger Binding="{Binding FolderSort}" Value="Manual">
-															<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+															<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 														</DataTrigger>
 													</Style.Triggers>
 												</Style>
@@ -1659,10 +1903,10 @@
 										<Button Content="{loc:Tr Folders_SortCount}" Command="{Binding SetFolderSortCommand}" CommandParameter="GameCount" Margin="8,0,0,0">
 											<Button.Style>
 												<Style TargetType="Button" BasedOn="{StaticResource AccentButton}">
-													<Setter Property="Background" Value="#26FFFFFF" />
+													<Setter Property="Background" Value="#26FFFFFF" /><Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
 													<Style.Triggers>
 														<DataTrigger Binding="{Binding FolderSort}" Value="GameCount">
-															<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+															<Setter Property="Background" Value="{DynamicResource AccentBrush}" /><Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}" />
 														</DataTrigger>
 													</Style.Triggers>
 												</Style>
@@ -1692,13 +1936,34 @@
 								<TextBlock Text="{loc:Tr Google_Title}" FontSize="15" FontWeight="SemiBold" />
 								<TextBlock Text="{loc:Tr Google_Desc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,12" />
 								<TextBlock Text="{loc:Tr Google_Key}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" />
-								<TextBox Text="{Binding GoogleApiKey, UpdateSourceTrigger=LostFocus}" Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}" CaretBrush="{DynamicResource TextBrush}" BorderThickness="0" Padding="10,8" Margin="0,4,0,10" />
+								<controls:SecretBox Text="{Binding GoogleApiKey}" Margin="0,4,0,10" />
 								<TextBlock Text="{loc:Tr Google_Cx}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" />
 								<TextBox Text="{Binding GoogleSearchEngineId, UpdateSourceTrigger=LostFocus}" Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}" CaretBrush="{DynamicResource TextBrush}" BorderThickness="0" Padding="10,8" Margin="0,4,0,0" />
-								<Button Content="{loc:Tr Google_Help}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" HorizontalAlignment="Left" Margin="0,12,0,0" Command="{Binding OpenClientCommand}" CommandParameter="https://programmablesearchengine.google.com/controlpanel/create" />
+								<Button Content="{loc:Tr Google_Help}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" HorizontalAlignment="Left" Margin="0,12,0,0" Command="{Binding OpenClientCommand}" CommandParameter="https://programmablesearchengine.google.com/controlpanel/create" />
 							</StackPanel>
 						</Border>
 
+						<Border Style="{StaticResource OutlineCard}" Margin="0,20,0,0">
+							<StackPanel>
+								<TextBlock Text="{loc:Tr Grid_Title}" FontSize="15" FontWeight="SemiBold" />
+								<TextBlock Text="{loc:Tr Grid_Desc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,12" />
+								<TextBlock Text="{loc:Tr Google_Key}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" />
+								<controls:SecretBox Text="{Binding SteamGridDbApiKey}" Margin="0,4,0,0" />
+								<Button Content="{loc:Tr Grid_Help}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" HorizontalAlignment="Left" Margin="0,12,0,0" Command="{Binding OpenClientCommand}" CommandParameter="https://www.steamgriddb.com/profile/preferences/api" />
+							</StackPanel>
+						</Border>
+
+						<Border Style="{StaticResource OutlineCard}" Margin="0,20,0,0">
+							<StackPanel>
+								<TextBlock Text="{loc:Tr Igdb_Title}" FontSize="15" FontWeight="SemiBold" />
+								<TextBlock Text="{loc:Tr Igdb_Desc}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,4,0,12" />
+								<TextBlock Text="Client ID" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" />
+								<TextBox Text="{Binding IgdbClientId, UpdateSourceTrigger=LostFocus}" Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}" CaretBrush="{DynamicResource TextBrush}" BorderThickness="0" Padding="10,8" Margin="0,4,0,10" />
+								<TextBlock Text="Client Secret" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" />
+								<controls:SecretBox Text="{Binding IgdbClientSecret}" Margin="0,4,0,0" />
+								<Button Content="{loc:Tr Igdb_Help}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" HorizontalAlignment="Left" Margin="0,12,0,0" Command="{Binding OpenClientCommand}" CommandParameter="https://api-docs.igdb.com/#account-creation" />
+							</StackPanel>
+						</Border>
 						<Border Style="{StaticResource OutlineCard}" Margin="0,20,0,0">
 							<StackPanel>
 								<TextBlock Text="{loc:Tr Steam_Title}" FontSize="15" FontWeight="SemiBold" />
@@ -1707,13 +1972,13 @@
 									<StackPanel>
 										<TextBlock Text="{loc:Tr Steam_Steps}" FontSize="12.5" LineHeight="20" TextWrapping="Wrap" />
 										<WrapPanel Margin="0,10,0,0">
-											<Button Content="{loc:Tr Steam_GetKey}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" Margin="0,0,8,0" Command="{Binding OpenClientCommand}" CommandParameter="https://steamcommunity.com/dev/apikey" />
-											<Button Content="{loc:Tr Steam_Privacy}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" Command="{Binding OpenClientCommand}" CommandParameter="https://steamcommunity.com/my/edit/settings?snapshot=privacy" />
+											<Button Content="{loc:Tr Steam_GetKey}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" Margin="0,0,8,0" Command="{Binding OpenClientCommand}" CommandParameter="https://steamcommunity.com/dev/apikey" />
+											<Button Content="{loc:Tr Steam_Privacy}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" Command="{Binding OpenClientCommand}" CommandParameter="https://steamcommunity.com/my/edit/settings?snapshot=privacy" />
 										</WrapPanel>
 									</StackPanel>
 								</Border>
 								<TextBlock Text="{loc:Tr Steam_KeyLabel}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" />
-								<TextBox Text="{Binding SteamApiKey, UpdateSourceTrigger=LostFocus}" Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}" CaretBrush="{DynamicResource TextBrush}" BorderThickness="0" Padding="10,8" Margin="0,4,0,10" />
+								<controls:SecretBox Text="{Binding SteamApiKey}" Margin="0,4,0,10" />
 								<TextBlock Text="{loc:Tr Steam_IdLabel}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" />
 								<Grid Margin="0,4,0,0">
 									<Grid.ColumnDefinitions>
@@ -1721,11 +1986,15 @@
 										<ColumnDefinition Width="Auto" />
 									</Grid.ColumnDefinitions>
 									<TextBox Text="{Binding SteamId, UpdateSourceTrigger=LostFocus}" Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}" CaretBrush="{DynamicResource TextBrush}" BorderThickness="0" Padding="10,8" />
-									<Button Grid.Column="1" Content="{loc:Tr Steam_Detect}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" FontSize="12" Margin="8,0,0,0" Command="{Binding DetectSteamIdCommand}" />
+									<Button Grid.Column="1" Content="{loc:Tr Steam_Detect}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" Margin="8,0,0,0" Command="{Binding DetectSteamIdCommand}" />
 								</Grid>
 								<StackPanel Orientation="Horizontal" Margin="0,12,0,0">
 									<Button Content="{loc:Tr Steam_Test}" Style="{StaticResource AccentButton}" FontSize="12" Command="{Binding CheckSteamAccountCommand}" />
 									<TextBlock Text="{Binding SteamAccountStatus}" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="12,0,0,0" TextWrapping="Wrap" MaxWidth="420" />
+								</StackPanel>
+								<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+									<Button Content="{loc:Tr Import_Button}" Style="{StaticResource AccentButton}" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" FontSize="12" Command="{Binding ImportSteamPlaytimeCommand}" />
+									<TextBlock Text="{Binding SteamImportStatus}" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="12,0,0,0" TextWrapping="Wrap" MaxWidth="420" />
 								</StackPanel>
 								<TextBlock Text="{loc:Tr Steam_Security}" Foreground="{DynamicResource MutedTextBrush}" FontSize="11.5" TextWrapping="Wrap" Margin="0,12,0,0" />
 							</StackPanel>
@@ -1748,15 +2017,15 @@
 											</StackPanel>
 											<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
 												<CheckBox Style="{StaticResource SwitchStyle}" IsChecked="{Binding IsEnabled, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,14,0" ToolTip="{loc:Tr Folder_Enabled}" />
-												<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" Margin="0,0,6,0" ToolTip="{loc:Tr Folders_MoveUp}"
+												<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,6,0" ToolTip="{loc:Tr Folders_MoveUp}"
 														Command="{Binding DataContext.MoveFolderUpCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
 													<TextBlock Text="&#xE70E;" FontFamily="{StaticResource IconFont}" FontSize="13" />
 												</Button>
-												<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" Margin="0,0,6,0" ToolTip="{loc:Tr Folders_MoveDown}"
+												<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,6,0" ToolTip="{loc:Tr Folders_MoveDown}"
 														Command="{Binding DataContext.MoveFolderDownCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
 													<TextBlock Text="&#xE70D;" FontFamily="{StaticResource IconFont}" FontSize="13" />
 												</Button>
-												<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" Margin="0,0,10,0" ToolTip="{loc:Tr Menu_EditFolder}"
+												<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" Margin="0,0,10,0" ToolTip="{loc:Tr Menu_EditFolder}"
 														Command="{Binding DataContext.EditFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
 													<TextBlock Text="&#xE70F;" FontFamily="{StaticResource IconFont}" FontSize="13" />
 												</Button>
@@ -1776,7 +2045,7 @@
 														<Image Source="{Binding Icon}" Width="24" Height="24" Visibility="{Binding HasIcon, Converter={StaticResource BoolToVisibility}}" />
 													</Grid>
 												</Border>
-												<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" VerticalAlignment="Center" ToolTip="{loc:Tr Library_RemoveFolder}"
+												<Button Style="{StaticResource CircleButton}" Width="36" Height="36" Background="#26FFFFFF" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" ToolTip="{loc:Tr Library_RemoveFolder}"
 													Command="{Binding DataContext.RemoveFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
 													CommandParameter="{Binding}">
 												<TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}" FontSize="14" />

@@ -2,7 +2,7 @@
 
 ## 1. Vision
 
-Un launcher unique qui regroupe les jeux et applications de toutes les plateformes (Steam, Epic, GOG, EA, Ubisoft, Battle.net, Xbox) et les ajouts manuels. Interface de type « vrai launcher », inspirée de GOG Galaxy. Projet open source (licence MIT), développé en local pour l'instant.
+Un launcher unique qui regroupe les jeux et applications de toutes les plateformes (Steam, Epic, GOG, EA, Ubisoft, Battle.net, Xbox) et les ajouts manuels. Interface de type « vrai launcher », inspirée de GOG Galaxy. Projet open source (licence MIT), publié sur GitHub.
 
 ## 2. Décisions actées
 
@@ -13,7 +13,7 @@ Un launcher unique qui regroupe les jeux et applications de toutes les plateform
 | Nommage du code | Anglais |
 | Plateforme cible | Windows uniquement |
 | Licence | MIT |
-| Dépôt | Local pour l'instant, pas de GitHub |
+| Dépôt | GitHub : Joshua-Hermilly/MateLauncher |
 | Serveur en ligne | Reporté (pas dans la première version) |
 | Lancement d'un jeu | Via le protocole de la plateforme (ex. `steam://run/<id>`), sinon exécutable direct |
 | Synchronisation | Au démarrage, à la fermeture, et via un bouton « Synchroniser » |
@@ -37,12 +37,12 @@ Ordre de priorité : Steam, Epic, jeux manuels, puis GOG, EA App, Ubisoft Connec
 
 ## 5. Pochettes et métadonnées
 
-Source recommandée : fichiers locaux de Steam et d'Epic quand ils existent, complétés par l'API SteamGridDB.
+Sources : fichiers locaux et magasin Steam, puis SteamGridDB, IGDB, Wikipédia et Google (clés facultatives).
 
 - Les images de Steam sont déjà sur le disque (cache de la bibliothèque), donc aucune connexion n'est nécessaire.
 - Epic fournit peu d'images en local, d'où l'intérêt de SteamGridDB (gratuit, clé d'API personnelle).
-- IGDB / RAWG donnent des descriptions, genres et dates de sortie, mais demandent aussi une clé et un compte développeur. À prévoir plus tard.
-- La clé d'API ne doit jamais être commitée : elle sera saisie dans les paramètres et stockée localement.
+- IGDB fournit descriptions, genres, dates de sortie et notes (compte Twitch requis) : intégré, avec cache local.
+- Les clés d'API ne sont jamais commitées : saisies dans les paramètres, stockées chiffrées (DPAPI) dans `settings.json`.
 
 ## 6. Hors périmètre pour l'instant
 
@@ -52,5 +52,4 @@ Serveur en ligne et comptes, fil d'actualité, social, téléchargement propre a
 
 - « Profils : tous » : je considère qu'il y a un seul utilisateur local, mais que plusieurs comptes d'une même plateforme peuvent être détectés. À confirmer.
 - Le nom du dossier est corrigé en `MateLauncher`.
-- Mises à jour du launcher lui-même : à décider plus tard.
-- Aucune action Git ni GitHub n'a été faite.
+- Mises à jour du launcher : releases GitHub, avec vérification SHA-256.

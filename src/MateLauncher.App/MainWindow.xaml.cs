@@ -145,6 +145,9 @@ public partial class MainWindow : Window
 			case nameof( MainViewModel.IsNewsOpen ) when _ViewModel.IsNewsOpen:
 				PlayTransition( NewsPage );
 				break;
+			case nameof( MainViewModel.IsHomeOpen ) when _ViewModel.IsHomeOpen:
+				PlayTransition( HomePage );
+				break;
 			case nameof( MainViewModel.SettingsSectionIndex ):
 				PlayTransition( SettingsContent );
 				break;

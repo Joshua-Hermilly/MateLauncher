@@ -8,11 +8,13 @@ public class ProcessGameLauncher : IGameLauncher
 {
 	private readonly ILibraryRepository _Repository;
 	private readonly IPlaytimeTracker _PlaytimeTracker;
+	private readonly IPerformanceMode _PerformanceMode;
 
-	public ProcessGameLauncher( ILibraryRepository repository, IPlaytimeTracker playtimeTracker )
+	public ProcessGameLauncher( ILibraryRepository repository, IPlaytimeTracker playtimeTracker, IPerformanceMode performanceMode )
 	{
 		_Repository = repository;
 		_PlaytimeTracker = playtimeTracker;
+		_PerformanceMode = performanceMode;
 	}
 
 	public Task StopAsync( Game game )
@@ -63,7 +65,29 @@ public class ProcessGameLauncher : IGameLauncher
 			startInfo.Verb = "runas";
 		}
 
-		Process.Start( startInfo );
+		bool isTracked = Directory.Exists( game.InstallPath );
+		bool isPrepared = false;
+
+		try
+		{
+			if ( isTracked )
+			{
+				await _PerformanceMode.PrepareAsync( game );
+				isPrepared = true;
+			}
+
+			Process.Start( startInfo );
+		}
+		catch
+		{
+			if ( isPrepared )
+			{
+				await _PerformanceMode.RestoreAsync( game );
+			}
+
+			throw;
+		}
+
 		await _Repository.MarkPlayedAsync( game.Id );
 		_PlaytimeTracker.Track( game );
 	}

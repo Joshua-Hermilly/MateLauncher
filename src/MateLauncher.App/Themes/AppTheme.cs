@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using MateLauncher.Core.Models;
+using MateLauncher.Core.Services;
 
 namespace MateLauncher.App.Themes;
 
@@ -67,6 +68,11 @@ public partial class AppTheme
 	public CustomTheme ToCustom()
 	{
 		return new CustomTheme { Id = Id, Name = Name, Background = Background, Sidebar = Sidebar, Card = Card, CardHover = CardHover, Border = Border, Accent = Accent, Text = Text, Muted = Muted };
+	}
+
+	public static string GetReadableTextColor( string backgroundHex )
+	{
+		return ColorContrast.GetReadableTextColor( backgroundHex );
 	}
 
 	public static Brush ToBrush( string hex )

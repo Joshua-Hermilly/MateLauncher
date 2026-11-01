@@ -14,6 +14,8 @@ public static class DatabaseInitializer
 		AddColumnIfMissing( context, "SIZE_BYTES", "ALTER TABLE GAMES ADD COLUMN SIZE_BYTES INTEGER NOT NULL DEFAULT 0" );
 		AddColumnIfMissing( context, "CATEGORY_NAME", "ALTER TABLE GAMES ADD COLUMN CATEGORY_NAME TEXT NULL" );
 		context.Database.ExecuteSqlRaw( "CREATE TABLE IF NOT EXISTS PLAYTIME_DAILY ( DAY TEXT NOT NULL, GAME_ID TEXT NOT NULL, SECONDS INTEGER NOT NULL, PRIMARY KEY ( DAY, GAME_ID ) )" );
+		context.Database.ExecuteSqlRaw( "CREATE TABLE IF NOT EXISTS PLAYTIME_SESSIONS ( ID TEXT NOT NULL PRIMARY KEY, GAME_ID TEXT NOT NULL, STARTED_AT TEXT NOT NULL, SECONDS INTEGER NOT NULL )" );
+		context.Database.ExecuteSqlRaw( "CREATE INDEX IF NOT EXISTS IX_PLAYTIME_SESSIONS_GAME_ID ON PLAYTIME_SESSIONS ( GAME_ID )" );
 	}
 
 	private static void AddColumnIfMissing( LauncherDbContext context, string columnName, string alterStatement )

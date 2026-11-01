@@ -20,6 +20,11 @@ public class ThemeService
 		new AppTheme( "rubis", "Rubis", "#1C1214", "#130B0D", "#281A1D", "#352327", "#3D2A2E", "#FF3B5C", "#F5E9EB", "#B39A9F" )
 	};
 
+	private string _LastThemeId = DefaultThemeId;
+	private string? _LastAccent;
+
+	public int TranslucencyLevel { get; private set; }
+
 	public IReadOnlyList<AppTheme> Themes => _Themes;
 
 	public IReadOnlyList<string> AccentColors { get; } = new List<string> { "#FF3B30", "#FF5CA8", "#A855F7", "#3B9EFF", "#19D3DA", "#2FD08A", "#FFB020" };
@@ -68,20 +73,45 @@ public class ThemeService
 		_Themes.RemoveAll( theme => theme.IsCustom && theme.Id == themeId );
 	}
 
+	public void SetTranslucency( int level )
+	{
+		TranslucencyLevel = Math.Clamp( level, 0, 100 );
+		TitleBarStyler.BackdropEnabled = TranslucencyLevel > 0;
+		Apply( _LastThemeId, _LastAccent );
+		TitleBarStyler.ApplyToAllWindows();
+	}
+
+	private Brush Surface( string hex, byte minimumAlpha )
+	{
+		if ( TranslucencyLevel <= 0 || !TitleBarStyler.IsBackdropSupported )
+		{
+			return AppTheme.ToBrush( hex );
+		}
+
+		Color color = ( Color ) ColorConverter.ConvertFromString( hex );
+		byte alpha = ( byte ) Math.Round( 255 - ( ( 255 - minimumAlpha ) * TranslucencyLevel / 100.0 ) );
+		SolidColorBrush brush = new SolidColorBrush( Color.FromArgb( alpha, color.R, color.G, color.B ) );
+		brush.Freeze();
+		return brush;
+	}
+
 	public void Apply( string themeId, string? accentOverride )
 	{
+		_LastThemeId = themeId;
+		_LastAccent = accentOverride;
 		AppTheme theme = GetTheme( themeId );
 		string accent = string.IsNullOrWhiteSpace( accentOverride ) ? theme.Accent : accentOverride;
 		ResourceDictionary resources = Application.Current.Resources;
 
 		resources[ "BackgroundColor" ] = ( Color ) ColorConverter.ConvertFromString( theme.Background );
 		resources[ "AccentColor" ] = ( Color ) ColorConverter.ConvertFromString( accent );
-		resources[ "BackgroundBrush" ] = AppTheme.ToBrush( theme.Background );
-		resources[ "SidebarBrush" ] = AppTheme.ToBrush( theme.Sidebar );
-		resources[ "CardBrush" ] = AppTheme.ToBrush( theme.Card );
-		resources[ "CardHoverBrush" ] = AppTheme.ToBrush( theme.CardHover );
+		resources[ "BackgroundBrush" ] = Surface( theme.Background, 0x50 );
+		resources[ "SidebarBrush" ] = Surface( theme.Sidebar, 0x40 );
+		resources[ "CardBrush" ] = Surface( theme.Card, 0x90 );
+		resources[ "CardHoverBrush" ] = Surface( theme.CardHover, 0xB0 );
 		resources[ "BorderBrush" ] = AppTheme.ToBrush( theme.Border );
 		resources[ "AccentBrush" ] = AppTheme.ToBrush( accent );
+		resources[ "OnAccentBrush" ] = AppTheme.ToBrush( AppTheme.GetReadableTextColor( accent ) );
 		resources[ "TextBrush" ] = AppTheme.ToBrush( theme.Text );
 		resources[ "MutedTextBrush" ] = AppTheme.ToBrush( theme.Muted );
 	}

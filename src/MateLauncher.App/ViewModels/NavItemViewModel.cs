@@ -18,7 +18,9 @@ public enum NavKind
 	Large,
 	Stats,
 	Downloads,
-	News
+	News,
+	Friends,
+	Home
 }
 
 public partial class NavItemViewModel : ObservableObject

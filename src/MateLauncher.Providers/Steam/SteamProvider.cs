@@ -112,7 +112,7 @@ public partial class SteamProvider : IGameProvider
 		return $"https://cdn.cloudflare.steamstatic.com/steam/apps/{appId}/library_600x900.jpg";
 	}
 
-	private static Game? ReadManifest( string manifestPath, string steamAppsPath, string steamPath )
+	internal static Game? ReadManifest( string manifestPath, string steamAppsPath, string steamPath )
 	{
 		string content = File.ReadAllText( manifestPath );
 		Match appId = ValueRegex( "appid" ).Match( content );

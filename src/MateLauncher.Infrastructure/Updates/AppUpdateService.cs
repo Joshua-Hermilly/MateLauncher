@@ -12,10 +12,11 @@ public enum UpdateCheckStatus
 	InvalidRepository,
 	NotFound,
 	NoInstaller,
+	NoChecksum,
 	Failed
 }
 
-public record AppUpdateInfo( string Version, string Notes, string PageUrl, string DownloadUrl, string FileName, long Size );
+public record AppUpdateInfo( string Version, string Notes, string PageUrl, string DownloadUrl, string FileName, long Size, string Sha256 );
 
 public record UpdateCheckResult( UpdateCheckStatus Status, AppUpdateInfo? Update );
 
@@ -27,6 +28,9 @@ public static partial class AppUpdateService
 
 	[GeneratedRegex( @"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" )]
 	private static partial Regex RepositoryPattern();
+
+	[GeneratedRegex( @"\b[0-9a-fA-F]{64}\b" )]
+	private static partial Regex Sha256Pattern();
 
 	[GeneratedRegex( @"^MateLauncher-Setup-.*\.exe$", RegexOptions.IgnoreCase )]
 	private static partial Regex InstallerPattern();
@@ -90,7 +94,14 @@ public static partial class AppUpdateService
 					string notes = root.TryGetProperty( "body", out JsonElement body ) ? body.GetString() ?? string.Empty : string.Empty;
 					string pageUrl = root.TryGetProperty( "html_url", out JsonElement page ) ? page.GetString() ?? string.Empty : string.Empty;
 					long size = asset.TryGetProperty( "size", out JsonElement sizeElement ) ? sizeElement.GetInt64() : 0;
-					return new UpdateCheckResult( UpdateCheckStatus.Available, new AppUpdateInfo( latest!.ToString(), notes, pageUrl, downloadUrl, fileName, size ) );
+					string? sha256 = await ReadChecksumAsync( root.GetProperty( "assets" ), fileName );
+
+					if ( sha256 is null )
+					{
+						return new UpdateCheckResult( UpdateCheckStatus.NoChecksum, null );
+					}
+
+					return new UpdateCheckResult( UpdateCheckStatus.Available, new AppUpdateInfo( latest!.ToString(), notes, pageUrl, downloadUrl, fileName, size, sha256 ) );
 				}
 			}
 
@@ -133,7 +144,44 @@ public static partial class AppUpdateService
 			}
 		}
 
+		await destination.DisposeAsync();
+
+		if ( !await MatchesChecksumAsync( target, update.Sha256 ) )
+		{
+			File.Delete( target );
+			throw new InvalidOperationException( "Checksum mismatch" );
+		}
+
 		return target;
+	}
+
+	public static async Task<bool> MatchesChecksumAsync( string filePath, string expectedSha256 )
+	{
+		await using FileStream stream = File.OpenRead( filePath );
+		byte[] hash = await System.Security.Cryptography.SHA256.HashDataAsync( stream );
+		return Convert.ToHexString( hash ).Equals( expectedSha256.Trim(), StringComparison.OrdinalIgnoreCase );
+	}
+
+	public static string? ParseChecksum( string content )
+	{
+		Match match = Sha256Pattern().Match( content );
+		return match.Success ? match.Value : null;
+	}
+
+	private static async Task<string?> ReadChecksumAsync( JsonElement assets, string installerName )
+	{
+		foreach ( JsonElement asset in assets.EnumerateArray() )
+		{
+			string name = asset.GetProperty( "name" ).GetString() ?? string.Empty;
+			string url = asset.GetProperty( "browser_download_url" ).GetString() ?? string.Empty;
+
+			if ( name.Equals( installerName + ".sha256", StringComparison.OrdinalIgnoreCase ) && IsTrustedDownload( url ) )
+			{
+				return ParseChecksum( await _HttpClient.GetStringAsync( url ) );
+			}
+		}
+
+		return null;
 	}
 
 	private static bool IsTrustedDownload( string url )

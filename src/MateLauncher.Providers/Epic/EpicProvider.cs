@@ -90,7 +90,7 @@ public class EpicProvider : IGameProvider
 		return null;
 	}
 
-	private static Game? ReadManifest( string manifestFile, Dictionary<string, string> coverUrls )
+	internal static Game? ReadManifest( string manifestFile, Dictionary<string, string> coverUrls )
 	{
 		try
 		{
